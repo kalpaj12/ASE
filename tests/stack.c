@@ -1,0 +1,68 @@
+/* Unit test for instructions that PUSH and POP data from/to stack. */
+
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "../glob.h"
+#include "../mem.h"
+#include "../parse.h"
+#include "../stack.h"
+
+int main(void) {
+	FILE *fd = fopen("tests/ph", "r");
+	if (!fd) {
+		fprintf(stderr, "TEST: STACK - Could not open PH.\n");
+		return 1;
+	}
+
+	glob_t *glob = init_glob(fd);
+	if (!glob) {
+		fprintf(stderr, "TEST: STACK - Glob is NULL.\n");
+		return 1;
+	}
+
+	char l_1[] = "MOV AX, 1234H";
+	char l_2[] = "MOV BX, 0H";
+	char l_3[] = "PUSH AX";
+	char l_4[] = "PUSH BX";
+	char l_5[] = "POP DX";
+
+	parse_line(glob, l_1);
+	move(glob, NULL, 0);
+	if (strcmp(glob->registers->ax, "4d2") != 0) {
+		fprintf(stderr, "TEST: STACK - Failed to set AX value.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_2);
+	move(glob, NULL, 0);
+	if (strcmp(glob->registers->bx, "0") != 0) {
+		fprintf(stderr, "TEST: STACK - Failed to set BX value.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_3);
+	push(glob, NULL, 0);
+	if (glob->stack->top != 0 || strcmp(glob->stack->arr[0], "4d2") != 0) {
+		fprintf(stderr, "Test MOV: Could not push AX to stack.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_4);
+	push(glob, NULL, 0);
+	if (glob->stack->top != 1 || strcmp(glob->stack->arr[1], "0") != 0) {
+		fprintf(stderr, "Test MOV: Could not push BX to stack.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_5);
+	pop(glob, NULL, 0);
+	if (glob->stack->top != 0 || strcmp(glob->registers->dx, "0") != 0) {
+		fprintf(stderr, "TEST MOV: Failed to pop to DX value.\n");
+		return 1;
+	}
+
+	fclose(fd);
+	return 0;
+}
