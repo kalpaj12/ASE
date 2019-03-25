@@ -88,11 +88,8 @@ int main(int argc, char **argv) {
 
 	/* Close existing file handles and clear out alloc'ed memory. */
 	fclose(fd);
+	destroy_glob(glob);
+	destroy_table(table);
 
-	/**
-	 * NOTE: SEGFAULT here.
-	 * destroy_glob(glob);
-	 * destroy_table(table);
-	 */
 	return flag;
 }
