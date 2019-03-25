@@ -7,8 +7,26 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "display.h"
+#include "parse.h"
+
+/**
+ * @desc  : Display specified register value.
+ * @param : reg - Register's value needed to display.
+ *          val - Value of register.
+ * @return: void
+ */
+void display_reg_val(char *reg, char *val) {
+	char reg_[1024] = {0};
+	memcpy(reg_, reg, sizeof(reg_));
+
+	char *back = &reg_[strlen(reg_) - 1];
+	const int klen = strlen(val);
+	*back = (klen <= 2 && klen >= 1) ? 'L' : 'X';
+	printf("[%s] - [%s]\n", reg_, val);
+}
 
 /**
  * @desc  : Display data from memory, registers and stack.
@@ -28,10 +46,10 @@ void display(glob_t *glob) {
 
 	if (glob->registers) {
 		printf("Register:\n");
-		printf("[%s] - [%s]\n", REG_AX, glob->registers->ax);
-		printf("[%s] - [%s]\n", REG_BX, glob->registers->bx);
-		printf("[%s] - [%s]\n", REG_CX, glob->registers->cx);
-		printf("[%s] - [%s]\n", REG_DX, glob->registers->dx);
+		display_reg_val(REG_AX, glob->registers->ax);
+		display_reg_val(REG_BX, glob->registers->bx);
+		display_reg_val(REG_CX, glob->registers->cx);
+		display_reg_val(REG_DX, glob->registers->dx);
 	}
 
 	if (glob->stack) {
