@@ -24,6 +24,7 @@ int main(void) {
 	char l_1[] = "MOV AX, 1234H";
 	char l_2[] = "MOV BX, AX";
 	char l_3[] = "MOV CX, DX";
+	char l_4[] = "MOV DL, 34H";
 
 	parse_line(glob, l_1);
 	move(glob, NULL, 0);
@@ -43,6 +44,13 @@ int main(void) {
 	move(glob, NULL, 0);
 	if (strcmp(glob->registers->cx, "") != 0) {
 		fprintf(stderr, "TEST MOV: Failed to set DX value.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_4);
+	move(glob, NULL, 0);
+	if (strcmp(glob->registers->dx, "34") != 0) {
+		fprintf(stderr, "TEST MOV: Failed to set DL value.\n");
 		return 1;
 	}
 
