@@ -93,17 +93,27 @@ int fetch_src(char *line, char *buf, unsigned long size) {
 }
 
 /**
- * @desc  : Returns if the specified register is 16 bit or not.
- * @param : reg - register to check.
- * @return: int - 0 if no, 1 if yes.
- */ 
-int is_16bit_reg(char *reg) {
+ * @desc  : Returns the size of the register.
+ * @param : reg - Size of the register that is required.
+ * @return: int - 0 if fail, else the size - 8, 16.
+ */
+int get_reg_size(char *reg) {
 	if (!reg) {
 		fprintf(stderr, "Invalid reg - points to NULL.\n");
 		return 0;
 	}
 
-	return is_loc_reg(reg) && reg[strlen(reg) - 1] == 'X';
+	if (!is_loc_reg(reg)) {
+		fprintf(stderr, "Specified reg [%s] is not a valid reg.\n", reg);
+		return 0;
+	}
+
+	switch (reg[1]) {
+	case 'L': return 8;
+	case 'X': return 16;
+	}
+
+	return 0;
 }
 
 /**
@@ -169,15 +179,11 @@ int is_loc_reg(char *loc) {
 		return 0;
 	}
 
-	int diff = abs(strcmp(loc, REG_AX));
-	switch (diff) {
-		case 0:
-		case 1:
-		case 2:
-		case 3: return 1;
-
-		default: return 0;
+	if (loc[0] >= 'A' && loc[0] <= 'D') {
+		return (loc[1] == 'L' || loc[1] == 'X');
 	}
+
+	return 0;
 }
 
 /**

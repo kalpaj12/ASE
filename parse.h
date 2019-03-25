@@ -24,7 +24,7 @@ static char *v_instr[] = {"ADD", "MOV", "POP", "PUSH", "SUB", NULL};
 int  fetch_dest     (char *line, char *buf, unsigned long size);
 int  fetch_instr    (char *line, char *buf, unsigned long size);
 int  fetch_src      (char *line, char *buf, unsigned long size);
-int  is_16bit_reg   (char *reg);
+int  get_reg_size   (char *reg);
 int  is_a_literal   (char *arg);
 int  is_instr_valid (char *instr);
 int  is_loc_reg     (char *loc);
