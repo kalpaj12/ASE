@@ -8,6 +8,7 @@
  */ 
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
@@ -40,11 +41,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 	char *dest = glob->tokens[1];
 
 	if (!is_valid_op(dest) || !is_valid_op(src)) {
-		fprintf(stderr, "Invalid operands for MOV.\n");
-		for (int i = 0; i < 2; i++) {
-			fprintf(stderr, "[%d:%s]\n", i, glob->tokens[i]);
-		}
-
+		fprintf(stderr, "Invalid operands for MOV: [%s] [%s]\n", dest, src);
 		return 0;
 	}
 
@@ -58,14 +55,34 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 
 	/* Immediate addressing mode. */
 	if (*back == HEX_FS) {
+		if (get_reg_size(dest) == 8) {
+			if (strlen(src) > 3) {
+				fprintf(stderr, "Data too large for 8 bit reg [%s].\n", dest);
+				return 0;
+			}
+		}
+
+		/* Clip HEX_FS */
 		*back = '\0';
-		sprintf(temp, "%lx", strtol(src, NULL, 0));
+		for (int i = 0; i < strlen(src); i++) {
+			if (isalpha(src[i])) {
+				if (src[i] > 'F') {
+					fprintf(stderr, "Invalid char in hex [%c].\n", src[i]);
+					return 0;
+				}
+			}
+		}
+
+		memcpy(temp, src, sizeof(temp));
 	/* Register addressing mode. */
-	} else {
+	} else if (is_loc_reg(src)) {
 		if (!get_reg_val(glob, src, temp, sizeof(temp))) {
 			fprintf(stderr, "Could not fetch reg [%s] value.\n", src);
 			return 0;
 		}
+	} else {
+		fprintf(stderr, "MOV: Invalid data specified.\n");
+		return 0;
 	}
 
 	if (strlen(temp) == 0) {

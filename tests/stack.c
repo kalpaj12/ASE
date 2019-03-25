@@ -30,7 +30,7 @@ int main(void) {
 
 	parse_line(glob, l_1);
 	move(glob, NULL, 0);
-	if (strcmp(glob->registers->ax, "4d2") != 0) {
+	if (strcmp(glob->registers->ax, "1234") != 0) {
 		fprintf(stderr, "TEST: STACK - Failed to set AX value.\n");
 		return 1;
 	}
@@ -44,7 +44,7 @@ int main(void) {
 
 	parse_line(glob, l_3);
 	push(glob, NULL, 0);
-	if (glob->stack->top != 0 || strcmp(glob->stack->arr[0], "4d2") != 0) {
+	if (glob->stack->top != 0 || strcmp(glob->stack->arr[0], "1234") != 0) {
 		fprintf(stderr, "Test MOV: Could not push AX to stack.\n");
 		return 1;
 	}

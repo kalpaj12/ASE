@@ -27,14 +27,14 @@ int main(void) {
 
 	parse_line(glob, l_1);
 	move(glob, NULL, 0);
-	if (strcmp(glob->registers->ax, "4d2") != 0) {
+	if (strcmp(glob->registers->ax, "1234") != 0) {
 		fprintf(stderr, "Test: MOV - Failed to set AX value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_2);
 	move(glob, NULL, 0);
-	if (strcmp(glob->registers->bx, "4d2") != 0) {
+	if (strcmp(glob->registers->bx, "1234") != 0) {
 		fprintf(stderr, "Test MOV: Failed to set BX value.\n");
 		return 1;
 	}
