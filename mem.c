@@ -55,11 +55,24 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 
 	/* Immediate addressing mode. */
 	if (*back == HEX_FS) {
-		if (get_reg_size(dest) == 8) {
+		switch (get_reg_size(dest)) {
+		case 8: {
 			if (strlen(src) > 3) {
 				fprintf(stderr, "Data too large for 8 bit reg [%s].\n", dest);
 				return 0;
 			}
+
+			break;
+		}
+
+		case 16: {
+			if (strlen(src) > 5) {
+				fprintf(stderr, "Data too large for 16 bit reg [%s].\n", dest);
+				return 0;
+			}
+
+			break;
+		}
 		}
 
 		/* Clip HEX_FS */
@@ -76,6 +89,14 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 		memcpy(temp, src, sizeof(temp));
 	/* Register addressing mode. */
 	} else if (is_loc_reg(src)) {
+		int r1_sz = get_reg_size(src);
+		int r2_sz = get_reg_size(dest);
+
+		if (r1_sz != r2_sz) {
+			fprintf(stderr, "MOV: Both registers must be of same size.\n");
+			return 0;
+		}
+
 		if (!get_reg_val(glob, src, temp, sizeof(temp))) {
 			fprintf(stderr, "Could not fetch reg [%s] value.\n", src);
 			return 0;
