@@ -313,7 +313,7 @@ int jump(glob_t *glob, char *buf, unsigned long size) {
 		}
 	}
 
-	return 1;
+	return 0;
 }
 
 /**
