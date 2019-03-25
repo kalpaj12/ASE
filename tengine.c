@@ -53,15 +53,19 @@ int call_by_name(table_t *table, glob_t *glob, char *buf, unsigned long size) {
  */
 void destroy_table(table_t *table) {
 	if (!table) {
+		fprintf(stderr, "Invalid table - points to NULL.\n");
 		return;
 	}
 
 	entry_t *entry = table->head;
 	while (entry) {
 		free(entry->f_id);
+		entry_t *x = entry;
 		entry = entry->next;
-		free(entry);
+		free(x);
 	}
+
+	free(table);
 }
 
 /**
