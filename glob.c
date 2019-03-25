@@ -17,7 +17,15 @@
  * @return: void
  */ 
 void destroy_glob(glob_t *glob) {
-	assert(glob);
+	if (!glob) {
+		fprintf(stderr, "Invalid glob - points to NULL.\n");
+		return;
+	}
+
+	fclose(glob->fd);
+	free(glob->flags);
+	free(glob->stack);
+	free(glob->registers);
 	free(glob);
 }
 
