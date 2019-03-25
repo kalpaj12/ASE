@@ -41,7 +41,12 @@ char *get_reg_ptr(glob_t *glob, char *reg) {
 
 		/* Convert 8 bit register to 16 bit. */
 		char *back = &reg[strlen(reg) - 1];
-		*back = 'X';
+		if (*back == 'L') {
+			*back = 'X';
+		} else if (*back != 'X') {
+			/* back - neither X nor L. */
+			return NULL;
+		}
 
 		int diff = abs(strcmp(reg, REG_AX));
 
