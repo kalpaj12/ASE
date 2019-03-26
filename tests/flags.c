@@ -51,28 +51,28 @@ int main(void) {
 	}
 
 	parse_line(glob, l_4);
-	set_flag(glob, NULL, 0);
+	cmc(glob, NULL, 0);
 	if (glob->flags->cf != 0) {
-		fprintf(stderr, "TEST: FLAGS - Could not run CMC:\n");
+		fprintf(stderr, "TEST: FLAGS - Could not run CMC.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_5);
-	set_flag(glob, NULL, 0);
+	clear_flag(glob, NULL, 0);
 	if (glob->flags->cf != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear CF flag.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_6);
-	set_flag(glob, NULL, 0);
+	clear_flag(glob, NULL, 0);
 	if (glob->flags->df != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear DF flag.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_7);
-	set_flag(glob, NULL, 0);
+	clear_flag(glob, NULL, 0);
 	if (glob->flags->iif != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear IF flag.\n");
 		return 1;
