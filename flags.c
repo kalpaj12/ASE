@@ -28,7 +28,7 @@ int cmc(glob_t *glob, char *buf, unsigned long size) {
 		return 0;
 	}
 
-	glob->flags->cf = glob->flags->cf == 1 ? 0 : 1;
+	glob->flags->cf = !glob->flags->cf;
 	return 1;
 }
 
