@@ -48,6 +48,10 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	if (argc == 2) {
+		fprintf(stderr, "Warning: Missing '-d' flag?\n");
+	}
+
 	table_t *table = init_table();
 	bind_calls(table);
 	FILE *fd = fopen(argv[1], "r");
