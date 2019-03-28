@@ -109,8 +109,9 @@ int get_reg_size(char *reg) {
 	}
 
 	switch (reg[1]) {
-	case 'L': return 8;
-	case 'X': return 16;
+	case 'H':               /* Upper 8 bit register. */
+	case 'L': return 8;     /* Lower 8 bit register. */
+	case 'X': return 16;    /* 16 bit register.      */
 	}
 
 	return 0;
@@ -180,7 +181,7 @@ int is_loc_reg(char *loc) {
 	}
 
 	if (loc[0] >= 'A' && loc[0] <= 'D') {
-		return (loc[1] == 'L' || loc[1] == 'X');
+		return (loc[1] == 'H' || loc[1] == 'L' || loc[1] == 'X');
 	}
 
 	return 0;
@@ -214,7 +215,7 @@ int is_loc_addr(char *loc) {
  * @param : op  - operand to validate.
  * @return: int - 0 if no, 1 if yes.
  */
-int is_valid_op (char *op) {
+int is_valid_op(char *op) {
 	if (!op) {
 		fprintf(stderr, "Invalid op - points to NULL.\n");
 		return 0;
