@@ -218,9 +218,11 @@ int is_loc_addr(char *loc) {
 int is_valid_hex(char *hex) {
 	char *ptr = hex;
 	while (*ptr) {
-		if ((!isalpha(*ptr) && !isdigit(*ptr)) || (isalpha(*ptr) && *ptr > 'F')) {
+		if ((!isalpha(*ptr) && !isdigit(*ptr)) || (isalpha(*ptr) && toupper(*ptr) > 'F')) {
 			return 0;
 		}
+		
+		ptr++;
 	}
 
 	return 1;
