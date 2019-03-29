@@ -29,6 +29,7 @@ int  is_a_literal   (char *arg);
 int  is_instr_valid (char *instr);
 int  is_loc_reg     (char *loc);
 int  is_loc_addr    (char *loc);
+int  is_valid_hex   (char *hex);
 int  is_valid_op    (char *op);
 int  jump           (glob_t *glob, char *buf, unsigned long size);
 int  jump_cx        (glob_t *glob, char *buf, unsigned long size);

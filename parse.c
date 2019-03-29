@@ -211,6 +211,22 @@ int is_loc_addr(char *loc) {
 }
 
 /**
+ * @desc  : Validates if given string is a valid hex.
+ * @param : hex - Hex to validate
+ * @return: int - 0 if no, 1 if yes.
+ */
+int is_valid_hex(char *hex) {
+	char *ptr = hex;
+	while (*ptr) {
+		if ((!isalpha(*ptr) && !isdigit(*ptr)) || (isalpha(*ptr) && *ptr > 'F')) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+/**
  * @desc  : Returns if the specified operand is valid.
  * @param : op  - operand to validate.
  * @return: int - 0 if no, 1 if yes.
