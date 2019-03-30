@@ -41,10 +41,10 @@ char *get_reg_ptr(glob_t *glob, char *reg) {
 
 		/* Convert 8 bit register to 16 bit. */
 		char *back = &reg[strlen(reg) - 1];
-		if (*back == 'L') {
+		if (*back == 'H' || *back == 'L') {
 			*back = 'X';
 		} else if (*back != 'X') {
-			/* back - neither X nor L. */
+			/* back - neither H, L nor X. */
 			return NULL;
 		}
 
@@ -134,6 +134,7 @@ int set_reg_val(glob_t *glob, char *reg, char *val) {
 	if (glob && reg && val) {
 		char *ptr = get_reg_ptr(glob, reg);
 		if (!ptr) {
+			fprintf(stderr, "set_reg_val(): ptr to reg is null.\n");
 			return 0;
 		}
 
