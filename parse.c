@@ -118,34 +118,6 @@ int get_reg_size(char *reg) {
 }
 
 /**
- * @desc  : Returns if the specified arg is a data (immediate addr mode).
- * @param : arg - argument to check for.
- * @return: int - 0 if no, 1 if yes.
- */
-int is_a_literal(char *arg) {
-	if (!arg) {
-		fprintf(stderr, "Invalid arg - points to NULL.\n");
-		return 0;
-	}
-
-	int ret = 0;
-	const int klen = strlen(arg);
-	char last = arg[klen - 1];
-
-	if (last == HEX_FS) {
-		ret = 1;
-	}
-
-	for (int i = 0; i <= klen - 2; i++) {
-		if (!isalnum(arg[i])) {
-			ret = 0;
-		}
-	}
-
-	return ret;
-}
-
-/**
  * @desc  : Returns if the instruction is valid (supported).
  * @param : instr - instruction to validate.
  * @return: int   - 0 if no, 1 if yes.
@@ -239,7 +211,13 @@ int is_valid_op(char *op) {
 		return 0;
 	}
 
-	return is_a_literal(op) ^ is_loc_addr(op) ^ is_loc_reg(op);
+	/**
+	 * An operand is valid if it is:
+	 * 	a) A value (hex?)
+	 * 	b) Is a memory location
+	 * 	c) Is a register
+	 */
+	return is_valid_hex(op) ^ is_loc_addr(op) ^ is_loc_reg(op);
 }
 
 /**
