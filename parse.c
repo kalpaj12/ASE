@@ -128,6 +128,8 @@ int is_instr_valid(char *instr) {
 	}
 
 	int idx = 0;
+	static char *v_instr[] = {"ADD", "MOV", "POP", "PUSH", "SUB", NULL};
+	
 	while (v_instr[idx]) {
 		if (!strcmp(instr, v_instr[idx++])) {
 			return 1;
