@@ -410,6 +410,14 @@ int parse_line(glob_t *glob, char *line) {
 			return 0;
 		}
 
+		if (i == 0) {
+			char *x = ptr;
+			while (*x) {
+				*x = toupper(*x);
+				x++;
+			}
+		}
+
 		if (*ptr == ',') {
 			/* Are we expecting a comma? Are we parsing op2? */
 			if (flag && i > 1) {
