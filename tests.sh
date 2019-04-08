@@ -10,7 +10,6 @@ do
 	gcc "$file" flags.c glob.c mem.c parse.c stack.c
 	./a.out
 
-
 	if [ $? -eq 1 ]
 	then
 		echo "Unit test fail: $file"
@@ -20,3 +19,10 @@ done
 
 echo "Failed unit tests: $fail"
 rm a.out
+
+if [ $fail -eq 0 ]
+then
+	echo "Build successful."
+else
+	echo "Build fail."
+fi
