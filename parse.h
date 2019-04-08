@@ -20,7 +20,6 @@
 
 #define HEX_FS  'H'
 
-static char *v_instr[] = {"ADD", "MOV", "POP", "PUSH", "SUB", NULL};
 int  fetch_dest     (char *line, char *buf, unsigned long size);
 int  fetch_instr    (char *line, char *buf, unsigned long size);
 int  fetch_src      (char *line, char *buf, unsigned long size);
