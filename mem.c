@@ -24,7 +24,6 @@
  * @return: int  - 0 if fail, 1 if success.
  */ 
 int hlt(glob_t *glob, char *buf, unsigned long size) {
-	/* tengine intercepts this return value and sends to main. */
 	return -1;
 }
 
@@ -38,6 +37,7 @@ int hlt(glob_t *glob, char *buf, unsigned long size) {
 int move(glob_t *glob, char *buf, unsigned long size) {
 
 	char val[1024];
+	int conv_req = 0;
 	char *src  = glob->tokens[2];
 	char *dest = glob->tokens[1];
 
@@ -65,6 +65,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 	}
 
 	switch (*last) {
+	/* Copy the specified hex literal to the register */
 	case 'H': {
 		*last = '\0';
 		if (!is_valid_hex(src)) {
@@ -72,37 +73,33 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 			return 0;	
 		}
 
-		strcpy(val, src);
 		break;
 	}
 
+	/* Convert the specified number to hex and then copy */
 	default: {
-		if (isalpha(*last)) {
-			fprintf(stderr, "MOV: Invalid specifier [%c].\n", *last);
-			return 0;
-		}
-
-		int k_len = strlen(src);
-		if (k_len > ((get_reg_size(dest) == 16) ? 4 : 2)) {
-			fprintf(stderr, "MOV: Operand too large for %s.\n", dest);
-			return 0;
-		}
-
 		char *ptr = src;
 		while (*ptr) {
-			if (!isalnum(*ptr++)) {
+			if (!isdigit(*ptr++)) {
 				fprintf(stderr, "MOV: Invalid value [%s].\n", src);
 				return 0;
 			}
 		}
 
-		sprintf(val, "%x", (unsigned int)strtol(src, NULL, 0));
+		conv_req = 1;
 		break;
 	}
 	}
 
+	int k_len = strlen(src);
+	if (k_len > ((get_reg_size(dest) == 16) ? 4 : 2)) {
+		fprintf(stderr, "MOV: Operand too large for %s.\n", dest);
+		return 0;
+	}
+
+	strcpy(val, src);
 	set:
-	if (!set_reg_val(glob, dest, val)) {
+	if (!set_reg_val(glob, dest, val, conv_req)) {
 		fprintf(stderr, "MOV: Could not set value.\n");
 		return 0;
 	}
