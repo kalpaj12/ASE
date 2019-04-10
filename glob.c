@@ -124,21 +124,50 @@ glob_t *init_glob(FILE *fd) {
 }
 
 /**
+ * @desc  : Returns the ul value of the specified register.
+ * @param : glob -
+ *          reg  - register's value that is required.
+ *          buf  - buffer receiving the value.
+ * @return: int  - 0 if fail, 1 if success.
+ */
+int reg_to_ul(glob_t *glob, char *reg, unsigned long *buf) {
+	if (glob && reg) {
+		char *ptr = get_reg_ptr(glob, reg);
+
+		if (ptr) {
+			*buf = strtol(ptr, NULL, 16);
+			return 1;
+		}
+	}
+
+	fprintf(stderr, "reg_to_ul(): Null ptrs received.\n");
+	return 0;
+}
+
+/**
  * @desc  : Sets the specified register's value.
  * @param : glob -
  *          reg  - register's value that is to be set.
  *          val  - value to set.
+ *          conv_req - should the value be converted to hex?
  * @return: 0 if fail, 1 if success.
  */
-int set_reg_val(glob_t *glob, char *reg, char *val) {
+int set_reg_val(glob_t *glob, char *reg, char *val, int conv_req) {
 	if (glob && reg && val) {
+		char buf[128];
 		char *ptr = get_reg_ptr(glob, reg);
+
 		if (!ptr) {
 			fprintf(stderr, "set_reg_val(): ptr to reg is null.\n");
 			return 0;
 		}
 
-		memcpy(ptr, val, REG_BUF);
+		if (conv_req) {
+			sprintf(buf, "%x", (unsigned int)strtol(val, NULL, 0));
+		}
+
+		char *cp = conv_req ? buf : val;
+		memcpy(ptr, cp, REG_BUF);
 		return 1;
 	}
 
