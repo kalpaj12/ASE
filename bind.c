@@ -7,9 +7,6 @@
 #include <assert.h>
 
 #include "bind.h"
-#include "flags.h"
-#include "mem.h"
-#include "stack.h"
 
 /**
  * @desc  : Bind instruction set to strings.
@@ -23,6 +20,7 @@ void bind_calls(table_t *table) {
 		return;
 	}
 
+	assert(register_entry(table, "ADD",  math_op));
 	assert(register_entry(table, "CLC",  clear_flag));
 	assert(register_entry(table, "CLD",  clear_flag));
 	assert(register_entry(table, "CLI",  clear_flag));
@@ -44,5 +42,6 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "STC",  set_flag));
 	assert(register_entry(table, "STD",  set_flag));
 	assert(register_entry(table, "STI",  set_flag));
+	assert(register_entry(table, "SUB",  math_op));
 	assert(register_entry(table, "XCHG",  xchg));
 }
