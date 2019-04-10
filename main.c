@@ -77,7 +77,12 @@ int main(int argc, char **argv) {
 			break;
 		}
 
-		if (!call_by_name(table, glob, NULL, (unsigned long)512)) {
+		int ret = call_by_name(table, glob, NULL, (unsigned long)512);
+		if (ret == -1) {
+			break;
+		}
+
+		if (!ret) {
 			flag = 1;
 			break;
 		}
