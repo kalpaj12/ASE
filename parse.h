@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include "glob.h"
 
+#define BIN_FS  'B'
 #define HEX_FS  'H'
 
 int  fetch_dest     (char *line, char *buf, unsigned long size);
