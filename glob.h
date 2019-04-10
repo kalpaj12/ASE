@@ -65,6 +65,7 @@ void    destroy_glob (glob_t *glob);
 char   *get_reg_ptr  (glob_t *glob, char *reg);
 int     get_reg_val  (glob_t *glob, char *reg, char *buf, unsigned long size);
 glob_t *init_glob    (FILE   *fd);
-int     set_reg_val  (glob_t *glob, char *reg, char *val);
+int     reg_to_ul    (glob_t *glob, char *reg, unsigned long *buf);
+int     set_reg_val  (glob_t *glob, char *reg, char *val, int conv_req);
 
 #endif
