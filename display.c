@@ -41,7 +41,8 @@ void display(glob_t *glob) {
 		printf("[Flag]:[Bit value] - [CF]:[%d]\n", glob->flags->cf);
 		printf("[Flag]:[Bit value] - [DF]:[%d]\n", glob->flags->df);
 		printf("[Flag]:[Bit value] - [IF]:[%d]\n", glob->flags->iif);
-		printf("[Flag]:[Bit value] - [PF]:[%d]\n\n", glob->flags->pf);
+		printf("[Flag]:[Bit value] - [PF]:[%d]\n", glob->flags->pf);
+		printf("[Flag]:[Bit value] - [ZF]:[%d]\n\n", glob->flags->zf);
 	}
 
 	if (glob->registers) {
