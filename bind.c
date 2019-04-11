@@ -25,6 +25,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "CLD",  clear_flag));
 	assert(register_entry(table, "CLI",  clear_flag));
 	assert(register_entry(table, "CMC",  cmc));
+	assert(register_entry(table, "CMP",  math_op));
 	assert(register_entry(table, "HLT",  hlt));
 	assert(register_entry(table, "JCXZ", jump_cx));
 	assert(register_entry(table, "JC",   jump_jx));
