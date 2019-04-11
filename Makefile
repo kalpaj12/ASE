@@ -1,17 +1,18 @@
 CFLAGS = -std=c11 -Wall
 
 all:
-	clang $(CFLAGS) bind.c -c
-	clang $(CFLAGS) glob.c -c
-	clang $(CFLAGS) display.c -c
-	clang $(CFLAGS) flags.c -c
-	clang $(CFLAGS) main.c -c
-	clang $(CFLAGS) mem.c -c
-	clang $(CFLAGS) parse.c -c
-	clang $(CFLAGS) stack.c -c
-	clang $(CFLAGS) tengine.c -c
+	gcc $(CFLAGS) a_math.c -c
+	gcc $(CFLAGS) bind.c -c
+	gcc $(CFLAGS) glob.c -c
+	gcc $(CFLAGS) display.c -c
+	gcc $(CFLAGS) flags.c -c
+	gcc $(CFLAGS) main.c -c
+	gcc $(CFLAGS) mem.c -c
+	gcc $(CFLAGS) parse.c -c
+	gcc $(CFLAGS) stack.c -c
+	gcc $(CFLAGS) tengine.c -c
 
-	clang bind.c display.o flags.o glob.o main.o mem.o \
+	gcc a_math.c bind.c display.o flags.o glob.o main.o mem.o \
 	parse.o stack.o tengine.o -o ase
 
 utests:
