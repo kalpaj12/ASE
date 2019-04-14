@@ -6,9 +6,7 @@ instructions - Move, jump, set/clear flag values etc.
 
 Building ASE:
 
-1) Replace `clang` with a choice of your own `C` compiler in `Makefile`.
-
-2) Run the provided build file: `./build.sh`
+Run the provided build script `./build.sh`.
 
 ### Sample program
 
