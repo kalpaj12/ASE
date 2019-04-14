@@ -7,6 +7,7 @@
  */
 
 #include <assert.h>
+#include <ctype.h>
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,8 +51,21 @@ int push(glob_t *glob, char *buf, unsigned long size) {
 	}
 
 	if (!ptr) {
-		fprintf(stderr, "Could not fetch ptr to reg [%s]\n", reg);
-		return 0;
+		char *x = reg;
+		while (*x) {
+			if (!isdigit(*x++)) {
+				fprintf(stderr, "push(): Invalid value [%s].\n", reg);
+				return 0;
+			}
+		}
+
+		if (strlen(reg) > 4) {
+			fprintf(stderr, "push(): Operand too large [%s]\n", reg);
+			return 0;
+		}
+
+		sprintf(*s_ptr, "%x", (unsigned int)strtol(reg, 0, 0));
+		return 1;
 	}
 	
 	memcpy(*s_ptr, ptr, (unsigned long)128);
