@@ -34,7 +34,7 @@ int push(glob_t *glob, char *buf, unsigned long size) {
 	}
 
 	if (!*s_ptr) {
-		*s_ptr = malloc((unsigned long)128);
+		*s_ptr = malloc((unsigned long)BUF_SZ);
 	}
 
 	char *ptr  = NULL;
@@ -68,7 +68,7 @@ int push(glob_t *glob, char *buf, unsigned long size) {
 		return 1;
 	}
 	
-	memcpy(*s_ptr, ptr, (unsigned long)128);
+	memcpy(*s_ptr, ptr, (unsigned long)BUF_SZ);
 	return 1;
 }
 

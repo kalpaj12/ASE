@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 
+#define BUF_SZ 128
 #define REG_BUF 32
 
 #define FLAG_AF "UF"
@@ -27,7 +28,7 @@ typedef struct flags {
 } flags_t;
 
 typedef struct mem_nodes {
-	char val[128];
+	char val[BUF_SZ];
 	int seg, offset, addr;
 	struct mem_nodes *next;
 } mem_nodes_t;
@@ -38,7 +39,7 @@ typedef struct mem {
 
 typedef struct stack {
 	int top;
-	char *arr[128];
+	char *arr[BUF_SZ];
 } stack_t;
 
 typedef struct registers {
@@ -54,8 +55,8 @@ typedef struct glob {
 	 * to_label - Label to jump - filled when a jump instr is specified.
 	 * tokens   - [instr] [op1] [op2]
 	 */
-	char tokens[3][128];
-	char label[128], to_label[128];
+	char tokens[3][BUF_SZ];
+	char label[BUF_SZ], to_label[BUF_SZ];
 
 	/**
 	 * c_line - Current source line number.

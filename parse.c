@@ -384,7 +384,7 @@ int parse_line(glob_t *glob, char *line) {
 		assert(glob->tokens[i]);
 	}
 
-	memset(glob->label, 0, 128);
+	memset(glob->label, 0, BUF_SZ);
 
 	glob->c_line++;
 	glob->p_len = glob->c_len;
@@ -445,7 +445,7 @@ int parse_line(glob_t *glob, char *line) {
 		if (end) {
 			/* Clip off the end and return */
 			*end = '\0';
-			memcpy(glob->tokens[i], ptr, 128);
+			memcpy(glob->tokens[i], ptr, BUF_SZ);
 			return 1;
 		}
 
@@ -453,7 +453,7 @@ int parse_line(glob_t *glob, char *line) {
 		/* Check for label. */
 		if (*back == ':') {
 			*back = '\0';
-			memcpy(glob->label, ptr, 128);
+			memcpy(glob->label, ptr, BUF_SZ);
 			/* Do not count label as a token. */
 			goto l1;
 		}
@@ -465,7 +465,7 @@ int parse_line(glob_t *glob, char *line) {
 			flag = 1;
 		}
 
-		memcpy(glob->tokens[i], ptr, 128);
+		memcpy(glob->tokens[i], ptr, BUF_SZ);
 		i++;
 
 		l1:

@@ -224,7 +224,7 @@ int reg_to_ul(glob_t *glob, char *reg, unsigned long *buf) {
  */
 int set_reg_val(glob_t *glob, char *reg, char *val, int conv_req) {
 	if (glob && reg && val) {
-		char buf[128];
+		char buf[BUF_SZ];
 		char *ptr = get_reg_ptr(glob, reg);
 
 		if (!ptr) {
