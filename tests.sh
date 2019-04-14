@@ -17,12 +17,4 @@ do
 	fi
 done
 
-echo "Failed unit tests: $fail"
 rm a.out
-
-if [ $fail -eq 0 ]
-then
-	echo "Build successful."
-else
-	echo "Build fail."
-fi

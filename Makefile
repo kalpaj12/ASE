@@ -12,8 +12,7 @@ all:
 	gcc $(CFLAGS) stack.c -c
 	gcc $(CFLAGS) tengine.c -c
 
-	gcc a_math.c bind.c display.o flags.o glob.o main.o mem.o \
-	parse.o stack.o tengine.o -o ase
+	gcc a_math.c bind.c display.o flags.o glob.o main.o mem.o parse.o stack.o tengine.o -o ase
 
 utests:
 	@./tests.sh
