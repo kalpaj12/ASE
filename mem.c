@@ -41,11 +41,6 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 	char *src  = glob->tokens[2];
 	char *dest = glob->tokens[1];
 
-	if (!is_loc_reg(dest)) {
-		fprintf(stderr, "MOV: Destination must be a register.\n");
-		return 0;
-	}
-
 	char *last = &src[strlen(src) - 1];
 	if (!isdigit(*last)) {
 		*last = toupper(*last);
@@ -56,7 +51,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 		int src_sz  = get_reg_size(src);
 
 		if (dest_sz != src_sz) {
-			fprintf(stderr, "MOV: Both registers must be of same size.\n");
+			fprintf(stderr, "move(): Both registers must be of same size.\n");
 			return 0;
 		}
 
@@ -66,10 +61,10 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 
 	switch (*last) {
 	/* Copy the specified hex literal to the register */
-	case 'H': {
+	case HEX_FS: {
 		*last = '\0';
 		if (!is_valid_hex(src)) {
-			fprintf(stderr, "MOV: Invalid value [%s].\n", src);
+			fprintf(stderr, "move(): Invalid value [%s].\n", src);
 			return 0;	
 		}
 
@@ -81,7 +76,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 		char *ptr = src;
 		while (*ptr) {
 			if (!isdigit(*ptr++)) {
-				fprintf(stderr, "MOV: Invalid value [%s].\n", src);
+				fprintf(stderr, "move(): Invalid value [%s].\n", src);
 				return 0;
 			}
 		}
@@ -91,16 +86,31 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 	}
 	}
 
-	int k_len = strlen(src);
-	if (k_len > ((get_reg_size(dest) == 16) ? 4 : 2)) {
-		fprintf(stderr, "MOV: Operand too large for %s.\n", dest);
+	int k_len  = strlen(src);
+	int max_sz = is_loc_reg(dest) ? ((get_reg_size(dest) == 16) ? 4 : 2) : 4;
+	if (k_len > max_sz) {
+		fprintf(stderr, "move(): Operand too large for %s.\n", dest);
 		return 0;
 	}
 
 	strcpy(val, src);
+
+	/* We can move either to a register or a memory location */
 	set:
+	if (is_loc_addr(dest)) {
+		/* Clip the square bracket */
+		dest[strlen(dest) - 1] = '\0';
+		add_to_mem(glob, 0, (int)strtol(&dest[1], NULL, 0), val, conv_req);
+		return 1;
+	}
+
+	if (!is_loc_reg(dest)) {
+		fprintf(stderr, "move(): Invalid dest operand [%s].\n", dest);
+		return 0;
+	}
+
 	if (!set_reg_val(glob, dest, val, conv_req)) {
-		fprintf(stderr, "MOV: Could not set value.\n");
+		fprintf(stderr, "move(): Could not set value.\n");
 		return 0;
 	}
 
