@@ -5,11 +5,70 @@
  */
 
 #include <assert.h>
+#include <ctype.h>
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "glob.h"
+#include "parse.h"
+
+/**
+ * @desc  : Allows user to move data to specified mem addr.
+ * @param : glob   -
+ *          seg    - segment address.
+ *          offset - offset address.
+ *          PA     - (seg * 10) + offset
+ *          val    - value to copy.
+ * @return: int    - 0 if fail, 1 if success.
+ */
+int add_to_mem(glob_t *glob, int seg, int offset, char *val, int conv_req) {
+	if (!glob) {
+		fprintf(stderr, "add_to_mem(): glob - null ptr.\n");
+		return 0;
+	}
+
+	mem_nodes_t *node = malloc(sizeof(mem_nodes_t));
+	if (!node) {
+		fprintf(stderr, "add_to_mem(): malloc failure.\n");
+		return 0;
+	}
+
+	node->next = NULL;
+	node->seg  = seg;
+	node->offset = offset;
+
+	/* 8086's PA is of 20 bits */
+	int base = conv_req ? 0 : 16;
+	node->addr = (seg * 10) + offset;
+	assert(strlen(val) <= 4);
+	(void) sprintf(node->val, "%x", (unsigned int)strtol(val, NULL, base));
+
+	if (!glob->mem->head) {
+		glob->mem->head = node;
+		return 1;
+	}
+
+	mem_nodes_t *curr = glob->mem->head, *prev = NULL;
+	while (curr) {
+		if (node->addr >= curr->addr) {
+			prev = curr;
+			curr = curr->next;
+		}
+
+		node->next = curr;
+		/* Appending to the beginning of the list? */
+		if (!prev) {
+			glob->mem->head = node;
+			return 1;
+		}
+
+		prev->next = node;
+		return 1;
+	}
+
+	return 0;
+}
 
 /**
  * @desc  : Destory parent structure.
@@ -23,6 +82,15 @@ void destroy_glob(glob_t *glob) {
 	}
 
 	fclose(glob->fd);
+
+	mem_nodes_t *node = glob->mem->head;
+	while (node) {
+		mem_nodes_t *temp = node;
+		node = node->next;
+		free(temp);
+	}
+
+	free(glob->mem);
 	free(glob->flags);
 	free(glob->stack);
 	free(glob->registers);
@@ -107,10 +175,12 @@ glob_t *init_glob(FILE *fd) {
 		return NULL;
 	}
 	
+	glob->mem = malloc(sizeof(mem_t));
 	glob->flags = malloc(sizeof(flags_t));
 	glob->stack = malloc(sizeof(stack_t));
 	glob->registers = malloc(sizeof(registers_t));
 
+	assert(glob->mem);
 	assert(glob->flags);
 	assert(glob->stack);
 	assert(glob->registers);
