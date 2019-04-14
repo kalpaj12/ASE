@@ -10,6 +10,6 @@
 #include "glob.h"
 #include "parse.h"
 
-void display(glob_t *glob);
+void display(glob_t *glob, int flags, int mem, int reg, int stack);
 
 #endif

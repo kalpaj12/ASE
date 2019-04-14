@@ -16,10 +16,13 @@
  * @param : glob -
  * @return: void
  */ 
-void display(glob_t *glob) {
-	assert(glob);
+void display(glob_t *glob, int flags, int mem, int reg, int stack) {
+	if (!glob) {
+		fprintf(stderr, "display(): glob - nullptr.\n");
+		return;
+	}
 
-	if (glob->flags) {
+	if (flags && glob->flags) {
 		printf("Flags:\n");
 		printf("[CF]:[%d]\n",   glob->flags->cf);
 		printf("[DF]:[%d]\n",   glob->flags->df);
@@ -28,7 +31,7 @@ void display(glob_t *glob) {
 		printf("[ZF]:[%d]\n\n", glob->flags->zf);
 	}
 
-	if (glob->registers) {
+	if (reg && glob->registers) {
 		printf("Register:\n");
 		printf("[AX]:[%s]\n",   glob->registers->ax);
 		printf("[BX]:[%s]\n",   glob->registers->bx);
@@ -36,22 +39,24 @@ void display(glob_t *glob) {
 		printf("[DX]:[%s]\n\n", glob->registers->dx);
 	}
 
-	if (glob->stack) {
+	if (stack && glob->stack) {
 		char **ptr = &glob->stack->arr[0];
-		if (ptr) {
+		if (*ptr) {
 			printf("Stack:\n");
 		}
 
 		while (*ptr) {
-			char **t = ptr;
-			printf("[%p]:[%s]\n", (void*)&*t, *ptr++);
-			free(*t);
-		}
+			char **ref = ptr;
+			printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
+			free(*ref);
 
-		printf("\n");
+			if (!ptr) {
+				printf("\n");
+			}
+		}
 	}
 
-	if (glob->mem) {
+	if (mem && glob->mem) {
 		printf("Memory:\n");
 		mem_nodes_t *node = glob->mem->head;
 		

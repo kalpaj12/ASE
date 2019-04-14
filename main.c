@@ -21,12 +21,17 @@
 
 void parse_args(glob_t *glob, int argc, char **argv) {
 	int opt;
-	while ((opt = getopt(argc, argv, "d")) != -1) {
+	int flags = 0, mem = 0, reg = 0, stack = 0;
+	while ((opt = getopt(argc, argv, "fmrs")) != -1) {
 		switch (opt) {
-		case 'd': display(glob); break;
+		case 'f': flags = 1; break;
+		case 'm': mem   = 1; break;
+		case 'r': reg   = 1; break;
+		case 's': stack = 1; break;
 		}
 	}
 
+	(void) display(glob, flags, mem, reg, stack);
 	for (; optind < argc; optind++) {
 		if (!strstr(argv[optind], ".asm")) {
 			fprintf(stderr, "Ignore extra argument: %s\n", argv[optind]);
@@ -36,8 +41,10 @@ void parse_args(glob_t *glob, int argc, char **argv) {
 
 void show_flags() {
 	fprintf(stderr, "Supported flags: \n\
-		-d : Display register and stack contents. \n\
-		-c : Flush memory out.\n");
+		-f : Show flag contents \n\
+		-m : Show memory contents \n\
+		-r : Show register contents \n\
+		-s : Show stack contents\n");
 }
 
 int main(int argc, char **argv) {
@@ -49,7 +56,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (argc == 2) {
-		fprintf(stderr, "Warning: Missing '-d' flag?\n");
+		fprintf(stderr, "Warning: Missing program flag(s)?\n");
 	}
 
 	table_t *table = init_table();
