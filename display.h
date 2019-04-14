@@ -8,6 +8,7 @@
 #define _ASE_DISPLAY_H_
 
 #include "glob.h"
+#include "parse.h"
 
 void display(glob_t *glob);
 
