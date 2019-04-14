@@ -37,13 +37,27 @@ void display(glob_t *glob) {
 	}
 
 	if (glob->stack) {
-		printf("Stack:\n");
 		char **ptr = &glob->stack->arr[0];
+		if (ptr) {
+			printf("Stack:\n");
+		}
 
 		while (*ptr) {
 			char **t = ptr;
 			printf("[%p]:[%s]\n", (void*)&*t, *ptr++);
 			free(*t);
+		}
+
+		printf("\n");
+	}
+
+	if (glob->mem) {
+		printf("Memory:\n");
+		mem_nodes_t *node = glob->mem->head;
+		
+		while (node) {
+			printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
+			node = node->next;
 		}
 	}
 }
