@@ -26,6 +26,16 @@ typedef struct flags {
 	int af, cf, df, iif, pf, zf;
 } flags_t;
 
+typedef struct mem_nodes {
+	char val[128];
+	int seg, offset, addr;
+	struct mem_nodes *next;
+} mem_nodes_t;
+
+typedef struct mem {
+	mem_nodes_t *head;
+} mem_t;
+
 typedef struct stack {
 	int top;
 	char *arr[128];
@@ -56,11 +66,13 @@ typedef struct glob {
 	 */
 	int c_line, c_len, p_len;
 
+	mem_t *mem;
 	flags_t *flags;
 	stack_t *stack;
 	registers_t *registers;
 } glob_t;
 
+int     add_to_mem   (glob_t *glob, int seg, int offset, char *val, int conv_req);
 void    destroy_glob (glob_t *glob);
 char   *get_reg_ptr  (glob_t *glob, char *reg);
 int     get_reg_val  (glob_t *glob, char *reg, char *buf, unsigned long size);
