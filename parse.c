@@ -175,13 +175,13 @@ int is_loc_addr(char *loc) {
 	int ret = (loc[0] == '[' && loc[strlen(loc) - 1] == ']') ?
 	          1 : 0;
 
-	for (int i = 1; i <= strlen(loc) - 2; i++) {
-		if (!isalnum(loc[i])) {
+	for (int i = 1; i < strlen(loc) - 2; i++) {
+		if (!isdigit(loc[i])) {
 			ret = 0;
 		}
 	}
 
-	return ret;
+	return ret && (loc[strlen(loc) - 2] == 'H' || loc[strlen(loc) - 2 == 'h']);
 }
 
 /**
