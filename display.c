@@ -50,7 +50,7 @@ void display(glob_t *glob, int flags, int mem, int reg, int stack) {
 			printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
 			free(*ref);
 
-			if (!ptr) {
+			if (!*ptr) {
 				printf("\n");
 			}
 		}
