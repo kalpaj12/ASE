@@ -40,6 +40,10 @@ void display(glob_t *glob, int flags, int mem, int reg, int stack) {
 	}
 
 	if (stack && glob->stack) {
+		if (glob->stack->top == -1) {
+			goto skip;	
+		}
+
 		char **ptr = &glob->stack->arr[0];
 		if (*ptr) {
 			printf("Stack:\n");
@@ -56,7 +60,12 @@ void display(glob_t *glob, int flags, int mem, int reg, int stack) {
 		}
 	}
 
+	skip:
 	if (mem && glob->mem) {
+		if (!glob->mem->head) {
+			return;
+		}
+		
 		printf("Memory:\n");
 		mem_nodes_t *node = glob->mem->head;
 		
