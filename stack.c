@@ -111,5 +111,6 @@ int pop(glob_t *glob, char *buf, unsigned long size) {
 	}
 
 	memcpy(ptr, s_ptr, REG_BUF);
+	free(glob->stack->arr[idx]);
 	return 1;
 }
