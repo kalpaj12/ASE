@@ -100,8 +100,9 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 		}
 
 		return 1;
-	} else if (!strcmp(instr, SUB)) {
-		result = d_val - s_val;
+	} else {
+		fprintf(stderr, "math_op(): Unsupported operand [%s].\n", instr);
+		return 0;
 	}
 
 	sprintf(val, "%ld", result);
