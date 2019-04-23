@@ -98,6 +98,34 @@ void destroy_glob(glob_t *glob) {
 }
 
 /**
+ * @desc  : Returns the memory value pointed by addr.
+ * @param : glob -
+ *          addr - address of the value.
+ *          buf  - buffer that receives the data.
+ *          size - size of the buffer.
+ * @return: int  - 0 if fail, 1 if success.
+ */ 
+int get_mem_val(glob_t *glob, int addr, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "get_mem_val(): glob - nullptr.\n");
+		return 0;
+	}
+
+	mem_nodes_t *node = glob->mem->head;
+	while (node) {
+		int pa = (node->seg * 10) + node->offset;
+		if (pa == addr) {
+			memcpy(buf, node->val, size);
+			return 1;
+		}
+
+		node = node->next;
+	}
+
+	return 0;
+}
+
+/**
  * @desc  : Returns the pointer to the specified register.
  * @param : glob -
  *          reg  - register's pointer that is required.

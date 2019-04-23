@@ -75,6 +75,7 @@ typedef struct glob {
 
 int     add_to_mem   (glob_t *glob, int seg, int offset, char *val, int conv_req);
 void    destroy_glob (glob_t *glob);
+int     get_mem_val  (glob_t *glob, int addr, char *buf, unsigned long size);
 char   *get_reg_ptr  (glob_t *glob, char *reg);
 int     get_reg_val  (glob_t *glob, char *reg, char *buf, unsigned long size);
 glob_t *init_glob    (FILE   *fd);
