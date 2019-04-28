@@ -19,34 +19,28 @@
  *          seg    - segment address.
  *          offset - offset address.
  *          PA     - (seg * 10) + offset
- *          val    - value to copy.
- * @return: int    - 0 if fail, 1 if success.
+ * @return: mem_nodes_t
  */
-int add_to_mem(glob_t *glob, int seg, int offset, char *val, int conv_req) {
+mem_nodes_t* add_to_mem(glob_t *glob, int seg, int offset) {
 	if (!glob) {
 		fprintf(stderr, "add_to_mem(): glob - null ptr.\n");
-		return 0;
+		return NULL;
 	}
 
 	mem_nodes_t *node = malloc(sizeof(mem_nodes_t));
 	if (!node) {
 		fprintf(stderr, "add_to_mem(): malloc failure.\n");
-		return 0;
+		return NULL;
 	}
 
 	node->next = NULL;
 	node->seg  = seg;
 	node->offset = offset;
 
-	/* 8086's PA is of 20 bits */
-	int base = conv_req ? 0 : 16;
 	node->addr = (seg * 10) + offset;
-	assert(strlen(val) <= 4);
-	(void) sprintf(node->val, "%x", (unsigned int)strtol(val, NULL, base));
-
 	if (!glob->mem->head) {
 		glob->mem->head = node;
-		return 1;
+		return node;
 	}
 
 	mem_nodes_t *curr = glob->mem->head, *prev = NULL;
@@ -60,14 +54,14 @@ int add_to_mem(glob_t *glob, int seg, int offset, char *val, int conv_req) {
 		/* Appending to the beginning of the list? */
 		if (!prev) {
 			glob->mem->head = node;
-			return 1;
+			return node;
 		}
 
 		prev->next = node;
-		return 1;
+		return node;
 	}
 
-	return 0;
+	return NULL;
 }
 
 /**
@@ -126,65 +120,101 @@ int get_mem_val(glob_t *glob, int addr, char *buf, unsigned long size) {
 }
 
 /**
+ * @desc  : Gets the specified operand's value.
+ * @param : glob -
+ *          op   - operand
+ *          buf  - buffer that receives the value.
+ *          size - size of the buffer.
+ * @return: int  - 0 if fail, 1 if success.
+ */ 
+int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "get_op_val(): glob - nullptr.\n");
+		return 0;
+	}
+
+	if (is_op_addr(op)) {
+		char addr[BUF_SZ];
+		memset(addr, 0, sizeof(addr));
+		memcpy(addr, &op[1], strlen(op) - 2);
+
+		return get_mem_val(glob, (int)strtol(addr, NULL, 0), buf, size);
+	}
+
+	if (is_op_reg(op)) {
+		char *ptr = get_reg_ptr(glob, op);
+		memcpy(buf, ptr, REG_BUF);
+		return 1;
+	}
+
+	/* Operand is a literal */
+	char *lchar = &op[strlen(op) - 1];
+	if (*lchar == 'H' || *lchar == 'h') {
+		*lchar = '\0';
+
+		/* Validate hex */
+		if (!is_valid_hex(op)) {
+			fprintf(stderr, "get_op_val(): Invalid hex literal.\n");
+			return 0;
+		}
+
+		memcpy(buf, op, size);
+		return 1;
+	} else {
+		/* Need to convert the literal to hex */
+		const int ksz = strlen(op);
+		for (int i = 0; i < ksz; i++) {
+			if (!isdigit(op[i])) {
+				fprintf(stderr, "get_op_val(): Invalid str literal [%s].\n", op);
+				return 0;
+			}
+		}
+
+		sprintf(buf, "%x", (int)strtol(op, NULL, 0));
+		return 1;
+	}
+
+	return 0;
+}
+
+/**
  * @desc  : Returns the pointer to the specified register.
  * @param : glob -
  *          reg  - register's pointer that is required.
  * @return: char*
  */ 
 char *get_reg_ptr(glob_t *glob, char *reg) {
-	if (glob && reg) {
-		char *ptr  = NULL;
-
-		/* Convert 8 bit register to 16 bit. */
-		char *back = &reg[strlen(reg) - 1];
-		if (*back == 'H' || *back == 'L') {
-			*back = 'X';
-		} else if (*back != 'X') {
-			/* back - neither H, L nor X. */
-			return NULL;
-		}
-
-		int diff = abs(strcmp(reg, REG_AX));
-
-		switch (diff) {
-		case 0: ptr = glob->registers->ax; break;
-		case 1: ptr = glob->registers->bx; break;
-		case 2: ptr = glob->registers->cx; break;
-		case 3: ptr = glob->registers->dx; break;
-
-		default: return NULL;
-		}
-
-		if (!ptr) {
-			ptr = malloc(REG_BUF);
-		}
-
-		return ptr;
+	if (!glob || !reg) {
+		fprintf(stderr, "get_reg_ptr(): nullptr received.\n");
+		return NULL;
 	}
 
-	return NULL;
-}
+	char *ptr  = NULL;
 
-/**
- * @desc  : Copies the specified register's value to buf.
- * @param : glob -
- *          reg  - register's value that is required.
- *          buf  - buffer receiving the value.
- *          size - size of the buffer.
- * @return: 0 if fail, 1 if success.
- */ 
-int get_reg_val(glob_t *glob, char *reg, char *buf, unsigned long size) {
-	if (glob && reg && buf) {
-		char *ptr = get_reg_ptr(glob, reg);
-		if (!ptr) {
-			return 0;
-		}
-
-		memcpy(buf, ptr, size);
-		return 1;
+	/* Convert 8 bit register to 16 bit. */
+	char *back = &reg[strlen(reg) - 1];
+	if (*back == 'H' || *back == 'L') {
+		*back = 'X';
+	} else if (*back != 'X') {
+		/* back - neither H, L nor X. */
+		return NULL;
 	}
 
-	return 0;
+	int diff = abs(strcmp(reg, REG_AX));
+	switch (diff) {
+	case 0: ptr = glob->registers->ax; break;
+	case 1: ptr = glob->registers->bx; break;
+	case 2: ptr = glob->registers->cx; break;
+	case 3: ptr = glob->registers->dx; break;
+
+	default: return NULL;
+	}
+
+	if (!ptr) {
+		ptr = malloc(REG_BUF);
+	}
+
+	return ptr;
 }
 
 /**
@@ -219,55 +249,4 @@ glob_t *init_glob(FILE *fd) {
 
 	memset(glob->flags, 0, sizeof(flags_t));
 	return glob;
-}
-
-/**
- * @desc  : Returns the ul value of the specified register.
- * @param : glob -
- *          reg  - register's value that is required.
- *          buf  - buffer receiving the value.
- * @return: int  - 0 if fail, 1 if success.
- */
-int reg_to_ul(glob_t *glob, char *reg, unsigned long *buf) {
-	if (glob && reg) {
-		char *ptr = get_reg_ptr(glob, reg);
-
-		if (ptr) {
-			*buf = strtol(ptr, NULL, 16);
-			return 1;
-		}
-	}
-
-	fprintf(stderr, "reg_to_ul(): Null ptrs received.\n");
-	return 0;
-}
-
-/**
- * @desc  : Sets the specified register's value.
- * @param : glob -
- *          reg  - register's value that is to be set.
- *          val  - value to set.
- *          conv_req - should the value be converted to hex?
- * @return: 0 if fail, 1 if success.
- */
-int set_reg_val(glob_t *glob, char *reg, char *val, int conv_req) {
-	if (glob && reg && val) {
-		char buf[BUF_SZ];
-		char *ptr = get_reg_ptr(glob, reg);
-
-		if (!ptr) {
-			fprintf(stderr, "set_reg_val(): ptr to reg is null.\n");
-			return 0;
-		}
-
-		if (conv_req) {
-			sprintf(buf, "%x", (unsigned int)strtol(val, NULL, 0));
-		}
-
-		char *cp = conv_req ? buf : val;
-		memcpy(ptr, cp, REG_BUF);
-		return 1;
-	}
-
-	return 0;
 }

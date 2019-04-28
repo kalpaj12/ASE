@@ -48,11 +48,12 @@ typedef struct registers {
 } registers_t;
 
 typedef struct glob {
+	int n_op;
 	FILE *fd;
 
 	/**
 	 * label    - Did user specify any label for the present line?
-	 * to_label - Label to jump - filled when a jump instr is specified.
+	 * to_label - Label to jump - filled when from_reg jump instr is specified.
 	 * tokens   - [instr] [op1] [op2]
 	 */
 	char tokens[3][BUF_SZ];
@@ -73,13 +74,11 @@ typedef struct glob {
 	registers_t *registers;
 } glob_t;
 
-int     add_to_mem   (glob_t *glob, int seg, int offset, char *val, int conv_req);
-void    destroy_glob (glob_t *glob);
-int     get_mem_val  (glob_t *glob, int addr, char *buf, unsigned long size);
-char   *get_reg_ptr  (glob_t *glob, char *reg);
-int     get_reg_val  (glob_t *glob, char *reg, char *buf, unsigned long size);
-glob_t *init_glob    (FILE   *fd);
-int     reg_to_ul    (glob_t *glob, char *reg, unsigned long *buf);
-int     set_reg_val  (glob_t *glob, char *reg, char *val, int conv_req);
+mem_nodes_t *add_to_mem  (glob_t *glob, int seg, int offset);
+void        destroy_glob (glob_t *glob);
+int         get_mem_val  (glob_t *glob, int addr, char *buf, unsigned long size);
+int         get_op_val   (glob_t *glob, char *op, char *buf, unsigned long size);
+char        *get_reg_ptr (glob_t *glob, char *reg);
+glob_t      *init_glob   (FILE   *fd);
 
 #endif
