@@ -49,6 +49,14 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 	char *dest = glob->tokens[1];
 	char *src_ = glob->tokens[2];
 
+	/* Strict size checking */
+	if (is_op_reg(dest) && is_op_reg(src_)) {
+		if (get_reg_size(dest) != get_reg_size(src_)) {
+			fprintf(stderr, "move(): both registers must be of same size.\n");
+			return 0;
+		}
+	}
+
 	if (!is_valid_op(dest)) {
 		fprintf(stderr, "move(): invalid destination operand.\n");
 		return 0;
