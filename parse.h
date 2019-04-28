@@ -21,11 +21,7 @@
 #define BIN_FS  'B'
 #define HEX_FS  'H'
 
-int  fetch_dest     (char *line, char *buf, unsigned long size);
-int  fetch_instr    (char *line, char *buf, unsigned long size);
-int  fetch_src      (char *line, char *buf, unsigned long size);
 int  get_reg_size   (char *reg);
-int  is_instr_valid (char *instr);
 int  is_loc_reg     (char *loc);
 int  is_loc_addr    (char *loc);
 int  is_valid_hex   (char *hex);

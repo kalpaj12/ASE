@@ -21,78 +21,6 @@
 #include "parse.h"
 
 /**
- * @desc  : Fetches the destination location from the source line.
- * @param : line - source line.
- *          buf  - buffer that receives this location.
- *          size - size of the buffer defined by the user.
- * @return: int  - 0 if fail, 1 if success.
- */
-int fetch_dest(char *line, char *buf, unsigned long size) {
-	memset(buf, 0, size);
-
-	char *beg = strchr(line, ' ');
-	char *end = strchr(line, ',');
-
-	if (beg++ && end) {
-		assert((end - beg) < size);
-		memcpy(buf, beg, (end - beg));
-		
-		return 1;
-	}
-
-	return 0;
-}
-
-/**
- * @desc  : Fetches the instruction from the source line.
- * @param : line - source line.
- *          buf  - buffer that receives this instruction.
- *          size - size of the buffer defined by the user.
- * @return: int  - 0 if fail, 1 if success.
- */
-int fetch_instr(char *line, char *buf, unsigned long size) {
-	memset(buf, 0, size);
-	char *ptr = line;
-
-	if (ptr) {
-		while (*ptr && size && *ptr != ' ') {
-			ptr++;
-		}
-
-		assert((ptr - line) < size);
-		memcpy(buf, line, (ptr - line));
-		return 1;
-	}
-
-	fprintf(stderr, "Delim - null.\n");
-	return 0;
-}
-
-/**
- * @desc  : Fetches the source location from the source line.
- * @param : line - source line.
- *          buf  - buffer that receives this location.
- *          size - size of the buffer defined by the user.
- * @return: int  - 0 if fail, 1 if success.
- */
-int fetch_src(char *line, char *buf, unsigned long size) {
-	memset(buf, 0, size);
-	char *beg = strrchr(line, ' ');
-
-	if (beg++) {
-		char *end = beg;
-		while (*end++);
-		
-		assert((end - beg) < size);
-		memcpy(buf, beg, (end - beg));
-
-		return 1;
-	}
-
-	return 0;
-}
-
-/**
  * @desc  : Returns the size of the register.
  * @param : reg - Size of the register that is required.
  * @return: int - 0 if fail, else the size - 8, 16.
@@ -118,35 +46,13 @@ int get_reg_size(char *reg) {
 }
 
 /**
- * @desc  : Returns if the instruction is valid (supported).
- * @param : instr - instruction to validate.
- * @return: int   - 0 if no, 1 if yes.
- */ 
-int is_instr_valid(char *instr) {
-	if (!instr) {
-		fprintf(stderr, "Invalid instr - points to NULL.\n");
-	}
-
-	int idx = 0;
-	static char *v_instr[] = {"ADD", "MOV", "POP", "PUSH", "SUB", NULL};
-	
-	while (v_instr[idx]) {
-		if (!strcmp(instr, v_instr[idx++])) {
-			return 1;
-		}
-	}
-
-	return 0;
-}
-
-/**
  * @desc  : Returns if the specified location is a register location.
  * @param : loc - Location to verify
  * @return: int - 0 for no, 1 for yes.
  */
 int is_loc_reg(char *loc) {
 	if (!loc) {
-		fprintf(stderr, "Invalid loc - points to NULL.\n");
+		fprintf(stderr, "is_loc_reg(): loc - nullptr.\n");
 		return 0;
 	}
 
@@ -168,7 +74,7 @@ int is_loc_reg(char *loc) {
  */
 int is_loc_addr(char *loc) {
 	if (!loc) {
-		fprintf(stderr, "Invalid loc - points to NULL.\n");
+		fprintf(stderr, "is_loc_addr(): loc - nullptr.\n");
 		return 0;
 	}
 
@@ -192,7 +98,8 @@ int is_loc_addr(char *loc) {
 int is_valid_hex(char *hex) {
 	char *ptr = hex;
 	while (*ptr) {
-		if ((!isalpha(*ptr) && !isdigit(*ptr)) || (isalpha(*ptr) && toupper(*ptr) > 'F')) {
+		if ((!isalpha(*ptr) && !isdigit(*ptr)) ||
+		    (isalpha(*ptr) && toupper(*ptr) > 'F')) {
 			return 0;
 		}
 		
@@ -232,7 +139,6 @@ int is_valid_op(char *op) {
  * @return: 0 if fail, 1 if success.
  */
 int jump(glob_t *glob, char *buf, unsigned long size) {
-	
 	if (buf) {
 		switch (*buf) {
 		/* buf - REG_CX - JCXZ */
@@ -472,6 +378,7 @@ int parse_line(glob_t *glob, char *line) {
 		ptr = strtok(NULL, " ");
 	}
 
+	glob->n_op = i - 1;
 	return 1;
 }
 
