@@ -25,9 +25,9 @@ int main(void) {
 	char l_2[] = "MOV BX, AX";
 	char l_3[] = "MOV CX, DX";
 	char l_4[] = "MOV DL, 34H";
-	char l_5[] = "MOV [1234H], 34H";
-	char l_6[] = "MOV [1245], 34H";
-	char l_7[] = "MOV [12], 34H";
+	char l_5[] = "MOV [1234], 1234";
+	char l_6[] = "MOV [12], 39H";
+	char l_7[] = "MOV [123], BX";
 
 	parse_line(glob, l_1);
 	move(glob, NULL, 0);
@@ -58,7 +58,8 @@ int main(void) {
 	}
 
 	int i = 0;
-	int arr[] = {12, 1234, 1245};
+	int   keys[] = {12, 123, 1234};
+	char *vals[] = {"39", "1234", "4d2"};
 
 	parse_line(glob, l_5);
 	move(glob, NULL, 0);
@@ -71,8 +72,17 @@ int main(void) {
 
 	mem_nodes_t *node = glob->mem->head;
 	while (node) {
-		assert(node->seg == 0);
-		assert(node->offset == arr[i]);
+		if (node->addr != keys[i]) {
+			fprintf(stderr, "TEST MOV: Order mismatch [%d] - [%d].\n",
+				node->addr, keys[i]);
+			return 1;
+		}
+
+		if (strcmp(node->val, vals[i])) {
+			fprintf(stderr, "TEST MOV: Value mismatch [%s] - [%s].\n",
+				node->val, vals[i]);
+		}
+
 		node = node->next;
 		i++;
 	}
