@@ -1,7 +1,7 @@
 /**
  * @file: mem.h
  * @desc: Defines the following 8086 instructions:
- *        a) HLT
+ *        LOC_TYPE) HLT
  *        b) MOV
  *        c) NEG
  *        d) NOP
@@ -35,86 +35,46 @@ int hlt(glob_t *glob, char *buf, unsigned long size) {
  * @return: int  - 0 if fail, 1 if success.
  */ 
 int move(glob_t *glob, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "move(): glob - nullptr.\n");
+		return 1;
+	}
 
-	char val[1024];
-	int conv_req = 0;
-	char *src  = glob->tokens[2];
+	if (glob->n_op != 2) {
+		char *n_op = glob->n_op > 2 ? "excess" : "missing";
+		fprintf(stderr, "move(): %s operands.\n", n_op);
+		return 0;
+	}
+
 	char *dest = glob->tokens[1];
+	char *src_ = glob->tokens[2];
 
-	char *last = &src[strlen(src) - 1];
-	if (!isdigit(*last)) {
-		*last = toupper(*last);
+	if (!is_valid_op(dest)) {
+		fprintf(stderr, "move(): invalid destination operand.\n");
+		return 0;
 	}
 
-	if (is_loc_reg(src)) {
-		int dest_sz = get_reg_size(dest);
-		int src_sz  = get_reg_size(src);
-
-		if (dest_sz != src_sz) {
-			fprintf(stderr, "move(): Both registers must be of same size.\n");
-			return 0;
-		}
-
-		get_reg_val(glob, src, val, sizeof(val));
-		goto set;
-	}
-
-	switch (*last) {
-	/* Copy the specified hex literal to the register */
-	case HEX_FS: {
-		*last = '\0';
-		if (!is_valid_hex(src)) {
-			fprintf(stderr, "move(): Invalid value [%s].\n", src);
-			return 0;	
-		}
-
-		break;
-	}
-
-	/* Convert the specified number to hex and then copy */
-	default: {
-		char *ptr = src;
-		while (*ptr) {
-			if (!isdigit(*ptr++)) {
-				fprintf(stderr, "move(): Invalid value [%s].\n", src);
+	if (is_op_addr(dest)) {
+		char addr[BUF_SZ];
+		memset(addr, 0, sizeof(addr));
+		memcpy(addr, &dest[1], strlen(dest) - 2);
+		
+		for (int i = 0; i < strlen(addr); i++) {
+			if (!isdigit(addr[i])) {
+				fprintf(stderr, "move(): invalid address [%s].\n", addr);
 				return 0;
 			}
 		}
 
-		conv_req = 1;
-		break;
-	}
-	}
-
-	int k_len  = strlen(src);
-	int max_sz = is_loc_reg(dest) ? ((get_reg_size(dest) == 16) ? 4 : 2) : 4;
-	if (k_len > max_sz) {
-		fprintf(stderr, "move(): Operand too large for %s.\n", dest);
-		return 0;
+		int offset = (int)strtol(addr, NULL, 0);
+		dest = add_to_mem(glob, 0, offset)->val;
 	}
 
-	strcpy(val, src);
-
-	/* We can move either to a register or a memory location */
-	set:
-	if (is_loc_addr(dest)) {
-		/* Clip the square bracket */
-		dest[strlen(dest) - 1] = '\0';
-		add_to_mem(glob, 0, (int)strtol(&dest[1], NULL, 0), val, conv_req);
-		return 1;
+	if (is_op_reg(dest)) {
+		dest = get_reg_ptr(glob, dest);
 	}
 
-	if (!is_loc_reg(dest)) {
-		fprintf(stderr, "move(): Invalid dest operand [%s].\n", dest);
-		return 0;
-	}
-
-	if (!set_reg_val(glob, dest, val, conv_req)) {
-		fprintf(stderr, "move(): Could not set value.\n");
-		return 0;
-	}
-
-	return 1;
+	return get_op_val(glob, src_, dest, REG_BUF);
 }
 
 /**
@@ -171,22 +131,26 @@ int nop(glob_t *glob, char *buf, unsigned long size) {
  * 
  */
 int xchg(glob_t *glob, char *buf, unsigned long size) {
-
-	char *d_ptr = get_reg_ptr(glob, glob->tokens[1]);
-	char *s_ptr = get_reg_ptr(glob, glob->tokens[2]);
-
-	if (d_ptr && s_ptr) {
-		char *t = malloc(strlen(d_ptr) + 1);
-		if (!t) {
-			return 0;
-		}
-
-		strcpy(t, d_ptr);
-		strcpy(d_ptr, s_ptr);
-		strcpy(s_ptr, t);
-		free(t);
-		return 1;
+	if (!glob) {
+		fprintf(stderr, "xchg(): glob - nullptr.\n");
+		return 0;
 	}
 
-	return 0;
+	char *dest = get_reg_ptr(glob, glob->tokens[1]);
+	char *src_ = get_reg_ptr(glob, glob->tokens[2]);
+
+	if (!dest || !src_) {
+		return 0;
+	}
+	
+	char *temp = malloc(strlen(dest) + 1);
+	if (!temp) {
+		return 0;
+	}
+
+	strcpy(temp, dest);
+	strcpy(dest, src_);
+	strcpy(src_, temp);
+	free(temp);
+	return 1;
 }
