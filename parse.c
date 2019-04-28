@@ -31,7 +31,7 @@ int get_reg_size(char *reg) {
 		return 0;
 	}
 
-	if (!is_loc_reg(reg)) {
+	if (!is_op_reg(reg)) {
 		fprintf(stderr, "Specified reg [%s] is not a valid reg.\n", reg);
 		return 0;
 	}
@@ -47,21 +47,21 @@ int get_reg_size(char *reg) {
 
 /**
  * @desc  : Returns if the specified location is a register location.
- * @param : loc - Location to verify
+ * @param : op - Location to verify
  * @return: int - 0 for no, 1 for yes.
  */
-int is_loc_reg(char *loc) {
-	if (!loc) {
-		fprintf(stderr, "is_loc_reg(): loc - nullptr.\n");
+int is_op_reg(char *op) {
+	if (!op) {
+		fprintf(stderr, "is_op_reg(): op - nullptr.\n");
 		return 0;
 	}
 
-	if (strlen(loc) != 2) {
+	if (strlen(op) != 2) {
 		return 0;
 	}
 
-	if (loc[0] >= 'A' && loc[0] <= 'D') {
-		return (loc[1] == 'H' || loc[1] == 'L' || loc[1] == 'X');
+	if (op[0] >= 'A' && op[0] <= 'D') {
+		return (op[1] == 'H' || op[1] == 'L' || op[1] == 'X');
 	}
 
 	return 0;
@@ -69,25 +69,27 @@ int is_loc_reg(char *loc) {
 
 /**
  * @desc  : Returns if the specified location is a mem location.
- * @param : loc - location to check for.
+ * @param : op - location to check for.
  * @return: int - 0 if no, 1 if yes.
  */
-int is_loc_addr(char *loc) {
-	if (!loc) {
-		fprintf(stderr, "is_loc_addr(): loc - nullptr.\n");
+int is_op_addr(char *op) {
+	if (!op) {
+		fprintf(stderr, "is_op_addr(): op - nullptr.\n");
 		return 0;
 	}
 
-	int ret = (loc[0] == '[' && loc[strlen(loc) - 1] == ']') ?
+	const int ksz = strlen(op);
+	/* Address must begin and end with square brackets */
+	int ret = (op[0] == '[' && op[ksz - 1] == ']') ?
 	          1 : 0;
 
-	for (int i = 1; i < strlen(loc) - 2; i++) {
-		if (!isdigit(loc[i])) {
+	for (int i = 1; i < ksz - 1; i++) {
+		if (!isdigit(op[i])) {
 			ret = 0;
 		}
 	}
 
-	return ret && (loc[strlen(loc) - 2] == 'H' || loc[strlen(loc) - 2 == 'h']);
+	return ret;
 }
 
 /**
@@ -126,7 +128,7 @@ int is_valid_op(char *op) {
 	 * 	b) Is a memory location
 	 * 	c) Is a register
 	 */
-	return is_valid_hex(op) ^ is_loc_addr(op) ^ is_loc_reg(op);
+	return is_valid_hex(op) ^ is_op_addr(op) ^ is_op_reg(op);
 }
 
 /**
@@ -145,11 +147,9 @@ int jump(glob_t *glob, char *buf, unsigned long size) {
 		case 'C': {
 			int diff = strcmp(buf, REG_CX);
 			if (!diff) {
-				char val[1024];
-				if (!get_reg_val(glob, REG_CX, val, sizeof(val))) {
-					fprintf(stderr, "Could not fetch CX contents.\n");
-					return 0;
-				}
+				char val[BUF_SZ];
+				char *ptr = get_reg_ptr(glob, REG_CX);
+				memcpy(val, ptr, sizeof(val));
 
 				if (strcmp(val, "0") != 0) {
 					/* JCXZ condition failed. */
@@ -203,7 +203,7 @@ int jump(glob_t *glob, char *buf, unsigned long size) {
 	}
 
 	/* Jump */
-	char line[1024], to_label[1024];
+	char line[BUF_SZ], to_label[BUF_SZ];
 	memcpy(to_label, glob->tokens[1], sizeof(to_label));
 
 	while (fgets(line, sizeof(line), glob->fd) != NULL) {

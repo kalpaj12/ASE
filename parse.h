@@ -22,8 +22,8 @@
 #define HEX_FS  'H'
 
 int  get_reg_size   (char *reg);
-int  is_loc_reg     (char *loc);
-int  is_loc_addr    (char *loc);
+int  is_op_reg      (char *op);
+int  is_op_addr     (char *op);
 int  is_valid_hex   (char *hex);
 int  is_valid_op    (char *op);
 int  jump           (glob_t *glob, char *buf, unsigned long size);
