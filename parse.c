@@ -338,7 +338,7 @@ int parse_line(glob_t *glob, char *line) {
 		}
 
 		/* Token can begin only with alpha-numeric chars or a '['. */
-		if (!isalnum(*ptr) && *ptr != '[') {
+		if (!isalnum(*ptr) && *ptr != '[' && *ptr != '-') {
 			fprintf(stderr, "Unexpected character [%c].\n", *ptr);
 			return 0;
 		}

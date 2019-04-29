@@ -164,7 +164,7 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		/* Need to convert the literal to hex */
 		const int ksz = strlen(op);
 		for (int i = 0; i < ksz; i++) {
-			if (!isdigit(op[i])) {
+			if (!isdigit(op[i]) && op[i] != '-') {
 				fprintf(stderr, "get_op_val(): Invalid str literal [%s].\n", op);
 				return 0;
 			}
