@@ -364,7 +364,7 @@ int parse_line(glob_t *glob, char *line) {
 			goto l1;
 		}
 
-		if (!isalnum(*back)) {
+		if (!isalnum(*back) && *back != ']') {
 			*back = '\0';
 		} else {
 			/* We're expecting a comma. */
