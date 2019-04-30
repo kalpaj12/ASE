@@ -165,8 +165,11 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 	/* Operand is a literal */
 	char *lchar = &op[strlen(op) - 1];
 	if (*lchar == 'H' || *lchar == 'h' || size == -1) {
-		size = (unsigned long)BUF_SZ;
-		*lchar = '\0';
+		if (size != -1) {
+			*lchar = '\0';
+		} else {
+			size = (unsigned long)BUF_SZ;
+		}
 
 		/* Validate hex */
 		if (!is_valid_hex(op)) {

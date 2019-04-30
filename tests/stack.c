@@ -58,7 +58,7 @@ int main(void) {
 
 	parse_line(glob, l_5);
 	pop(glob, NULL, -1);
-	if (glob->stack->top != 0 || strcmp(glob->registers->dx, "") != 0) {
+	if (glob->stack->top != 0 || strcmp(glob->registers->dx, "0") != 0) {
 		fprintf(stderr, "TEST MOV: Failed to pop to DX.\n");
 		return 1;
 	}
