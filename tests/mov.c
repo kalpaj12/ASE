@@ -30,28 +30,28 @@ int main(void) {
 	char l_7[] = "MOV [123], BX";
 
 	parse_line(glob, l_1);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 	if (strcmp(glob->registers->ax, "1234") != 0) {
 		fprintf(stderr, "Test: MOV - Failed to set AX value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_2);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 	if (strcmp(glob->registers->bx, "1234") != 0) {
 		fprintf(stderr, "Test MOV: Failed to set BX value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_3);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 	if (strcmp(glob->registers->cx, "") != 0) {
 		fprintf(stderr, "TEST MOV: Failed to set DX value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_4);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 	if (strcmp(glob->registers->dx, "34") != 0) {
 		fprintf(stderr, "TEST MOV: Failed to set DL value.\n");
 		return 1;
@@ -62,13 +62,13 @@ int main(void) {
 	char *vals[] = {"39", "1234", "4d2"};
 
 	parse_line(glob, l_5);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 
 	parse_line(glob, l_6);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 
 	parse_line(glob, l_7);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 
 	mem_nodes_t *node = glob->mem->head;
 	while (node) {

@@ -29,37 +29,37 @@ int main(void) {
 	char l_5[] = "POP DX";
 
 	parse_line(glob, l_1);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 	if (strcmp(glob->registers->ax, "1234") != 0) {
 		fprintf(stderr, "TEST: STACK - Failed to set AX value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_2);
-	move(glob, NULL, 0);
+	move(glob, NULL, BUF_SZ);
 	if (strcmp(glob->registers->bx, "0") != 0) {
 		fprintf(stderr, "TEST: STACK - Failed to set BX value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_3);
-	push(glob, NULL, 0);
+	push(glob, NULL, BUF_SZ);
 	if (glob->stack->top != 0 || strcmp(glob->stack->arr[0], "1234") != 0) {
 		fprintf(stderr, "Test MOV: Could not push AX to stack.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_4);
-	push(glob, NULL, 0);
+	push(glob, NULL, BUF_SZ);
 	if (glob->stack->top != 1 || strcmp(glob->stack->arr[1], "0") != 0) {
 		fprintf(stderr, "Test MOV: Could not push BX to stack.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_5);
-	pop(glob, NULL, 0);
-	if (glob->stack->top != 0 || strcmp(glob->registers->dx, "0") != 0) {
-		fprintf(stderr, "TEST MOV: Failed to pop to DX value.\n");
+	pop(glob, NULL, -1);
+	if (glob->stack->top != 0 || strcmp(glob->registers->dx, "") != 0) {
+		fprintf(stderr, "TEST MOV: Failed to pop to DX.\n");
 		return 1;
 	}
 

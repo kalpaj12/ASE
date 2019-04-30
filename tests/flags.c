@@ -30,49 +30,49 @@ int main(void) {
 	char l_7[] = "CLI";
 
 	parse_line(glob, l_1);
-	set_flag(glob, NULL, 0);
+	set_flag(glob, NULL, BUF_SZ);
 	if (glob->flags->cf != 1) {
 		fprintf(stderr, "TEST: FLAGS - Could not set CF value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_2);
-	set_flag(glob, NULL, 0);
+	set_flag(glob, NULL, BUF_SZ);
 	if (glob->flags->df != 1) {
 		fprintf(stderr, "TEST: FLAGS - Could not set DF value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_3);
-	set_flag(glob, NULL, 0);
+	set_flag(glob, NULL, BUF_SZ);
 	if (glob->flags->iif != 1) {
 		fprintf(stderr, "TEST: FLAGS - Could not set IF value.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_4);
-	cmc(glob, NULL, 0);
+	cmc(glob, NULL, BUF_SZ);
 	if (glob->flags->cf != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not run CMC.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_5);
-	clear_flag(glob, NULL, 0);
+	clear_flag(glob, NULL, BUF_SZ);
 	if (glob->flags->cf != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear CF flag.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_6);
-	clear_flag(glob, NULL, 0);
+	clear_flag(glob, NULL, BUF_SZ);
 	if (glob->flags->df != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear DF flag.\n");
 		return 1;
 	}
 
 	parse_line(glob, l_7);
-	clear_flag(glob, NULL, 0);
+	clear_flag(glob, NULL, BUF_SZ);
 	if (glob->flags->iif != 0) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear IF flag.\n");
 		return 1;
