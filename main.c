@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 
 	if (flag) {
 		fprintf(stderr, "Emulator halted due to an error in line %d. State preserved.\n\n",
-			glob->c_line);
+			++glob->c_line);
 	}
 
 	/* Program ends here. */
