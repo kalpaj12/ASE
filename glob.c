@@ -189,7 +189,24 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 			}
 		}
 
-		sprintf(buf, "%x", (int)strtol(op, NULL, 0));
+		char temp[BUF_SZ];
+		memset(temp, 0, sizeof(temp));
+		sprintf(temp, "%x", (int)strtol(op, NULL, 0));
+
+		/**
+		 * If the final answer is > 4 hex bits, last 4 bits reside as
+		 * usual in the chosen destination, while the rest len - 4 bits
+		 * are stored in DX (assuming the len - 4 can fit in DX). Else
+		 * the answer is beyond the range typical emulator(s) can handle.
+		 */
+		if (strlen(temp) <= 4) {
+			memcpy(buf, temp, BUF_SZ);
+		} else {
+			int idx = strlen(temp) - 4;
+			memcpy(glob->registers->dx, buf, idx);
+			memcpy(buf, &temp[idx], BUF_SZ);
+		}
+
 		return 1;
 	}
 
