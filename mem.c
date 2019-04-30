@@ -82,7 +82,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 		dest = get_reg_ptr(glob, dest);
 	}
 
-	return get_op_val(glob, src_, dest, REG_BUF);
+	return get_op_val(glob, src_, dest, BUF_SZ);
 }
 
 /**
