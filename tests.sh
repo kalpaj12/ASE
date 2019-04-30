@@ -7,7 +7,8 @@ fail=0
 
 for file in tests/*.c;
 do
-	gcc "$file" flags.c glob.c mem.c parse.c stack.c
+	echo "Running tests: $file"
+	gcc "$file" flags.c glob.c mem.c parse.c stack.c -o
 	./a.out
 
 	if [ $? -eq 1 ]
