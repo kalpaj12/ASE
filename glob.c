@@ -133,6 +133,20 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		return 0;
 	}
 
+	/**
+	 * In some occasions, we set size to -1. This is a hack, to indicate
+	 * that value of op must be copied to buf as it is, without any mod-
+	 * -ifications.
+	 * 	Eg: popping from stack (No conversions, direct copy)
+	 * 
+	 * In such cases, we acknowledge the request, and set the size back
+	 * to BUF_SZ.
+	 */
+	if (size == -1) {
+		/* ab_lit - absolute hex literal (no modifications) */
+		goto ab_lit;
+	}
+
 	if (is_op_addr(op)) {
 		char addr[BUF_SZ];
 		memset(addr, 0, sizeof(addr));
@@ -143,13 +157,15 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 
 	if (is_op_reg(op)) {
 		char *ptr = get_reg_ptr(glob, op);
-		memcpy(buf, ptr, REG_BUF);
+		memcpy(buf, ptr, size);
 		return 1;
 	}
 
+	ab_lit: ;
 	/* Operand is a literal */
 	char *lchar = &op[strlen(op) - 1];
-	if (*lchar == 'H' || *lchar == 'h') {
+	if (*lchar == 'H' || *lchar == 'h' || size == -1) {
+		size = (unsigned long)BUF_SZ;
 		*lchar = '\0';
 
 		/* Validate hex */
@@ -211,7 +227,7 @@ char *get_reg_ptr(glob_t *glob, char *reg) {
 	}
 
 	if (!ptr) {
-		ptr = malloc(REG_BUF);
+		ptr = malloc(BUF_SZ);
 	}
 
 	return ptr;

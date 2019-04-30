@@ -10,7 +10,6 @@
 #include <stdio.h>
 
 #define BUF_SZ 128
-#define REG_BUF 32
 
 #define FLAG_AF "UF"
 #define FLAG_CF "EF"
@@ -43,8 +42,8 @@ typedef struct stack {
 } stack_t;
 
 typedef struct registers {
-	char ax[REG_BUF], bx[REG_BUF],
-         cx[REG_BUF], dx[REG_BUF];
+	char ax[BUF_SZ], bx[BUF_SZ],
+         cx[BUF_SZ], dx[BUF_SZ];
 } registers_t;
 
 typedef struct glob {
@@ -74,11 +73,11 @@ typedef struct glob {
 	registers_t *registers;
 } glob_t;
 
-mem_nodes_t *add_to_mem  (glob_t *glob, int seg, int offset);
-void        destroy_glob (glob_t *glob);
-int         get_mem_val  (glob_t *glob, int addr, char *buf, unsigned long size);
-int         get_op_val   (glob_t *glob, char *op, char *buf, unsigned long size);
-char        *get_reg_ptr (glob_t *glob, char *reg);
-glob_t      *init_glob   (FILE   *fd);
+mem_nodes_t *add_to_mem   (glob_t *glob, int seg, int offset);
+void         destroy_glob (glob_t *glob);
+int          get_mem_val  (glob_t *glob, int addr, char *buf, unsigned long size);
+int          get_op_val   (glob_t *glob, char *op, char *buf, unsigned long size);
+char        *get_reg_ptr  (glob_t *glob, char *reg);
+glob_t      *init_glob    (FILE   *fd);
 
 #endif
