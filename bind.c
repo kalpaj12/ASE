@@ -36,6 +36,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "JPE",  jump_jx));
 	assert(register_entry(table, "JMP",  jump));
 	assert(register_entry(table, "MOV",  move));
+	assert(register_entry(table, "MUL",  math_op));
 	assert(register_entry(table, "NEG",  neg));
 	assert(register_entry(table, "NOP",  nop));
 	assert(register_entry(table, "POP",  pop));
@@ -44,5 +45,5 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "STD",  set_flag));
 	assert(register_entry(table, "STI",  set_flag));
 	assert(register_entry(table, "SUB",  math_op));
-	assert(register_entry(table, "XCHG",  xchg));
+	assert(register_entry(table, "XCHG", xchg));
 }
