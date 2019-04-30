@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
 			break;
 		}
 
-		int ret = call_by_name(table, glob, NULL, (unsigned long)512);
+		int ret = call_by_name(table, glob, NULL, (unsigned long)BUF_SZ);
 		if (ret == -1) {
 			break;
 		}
