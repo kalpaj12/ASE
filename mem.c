@@ -1,11 +1,7 @@
 /**
  * @file: mem.h
  * @desc: Defines the following 8086 instructions:
- *        LOC_TYPE) HLT
- *        b) MOV
- *        c) NEG
- *        d) NOP
- *        e) XCHG
+ *        DEC, HLT, INC, MOV, NEG, NOP, XCHG
  */ 
 
 #include <assert.h>
@@ -93,29 +89,36 @@ int move(glob_t *glob, char *buf, unsigned long size) {
  * @return: int  - 0 if fail, 1 if success.
  */  
 int neg(glob_t *glob, char *buf, unsigned long size) {
-	assert(glob && glob->registers);
-
-	char *op  = glob->tokens[1];
-	char *ptr = get_reg_ptr(glob, op);
-
-	if (!ptr) {
-		fprintf(stderr, "Invalid flag specified [%s].\n", op);
+	if (!glob) {
+		fprintf(stderr, "neg(): glob - nullptr.\n");
 		return 0;
 	}
 
-	int x = *ptr == '-' ? -1 : 1;
-	char *dup = *ptr == '-' ? ptr + 1 : ptr + strlen(ptr) - 1;
+	assert(glob->n_op == 1);
+	char *op = glob->tokens[1], *ptr = NULL;
 
-	while (*dup) {
-		*(dup + x) = *dup;
-		dup += (x * -1);
+	if (is_op_addr(op)) {
+		char addr[BUF_SZ];
+		memcpy(addr, &op[1], BUF_SZ);
+		int offset = (int)strtol(addr, NULL, 0);
+
+		mem_nodes_t *node = get_mem_node(glob, offset);
+		if (node) {
+			ptr = node->val;
+		}
 	}
 
-	switch (x) {
-	case 1 : *ptr = '-'; break;
-	default: *(ptr + strlen(ptr) - 1) = '\0'; break;
+	if (is_op_reg(op)) {
+		ptr = get_reg_ptr(glob, op);
 	}
 
+	if (!ptr) {
+		fprintf(stderr, "neg(): Invalid operand specified [%s].\n", op);
+		return 0;
+	}
+
+	int temp = (int)strtol(ptr, NULL, 16) * -1;
+	sprintf(ptr, "%x", temp);
 	return 1;
 }
 
@@ -127,6 +130,51 @@ int neg(glob_t *glob, char *buf, unsigned long size) {
  * @return: int  - 0 if fail, 1 if success.
  */  
 int nop(glob_t *glob, char *buf, unsigned long size) {
+	return 1;
+}
+
+/**
+ * 
+ * @desc  : Implements the INC and DEC instructions.
+ * @param : glob -
+ *          buf  - unused
+ *          size - unused
+ * @return: int  - 0 if fail, 1 if success.
+ */
+int unary(glob_t *glob, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "unary(): glob - nullptr.\n");
+		return 0;
+	}
+
+	assert(glob->n_op == 1);
+	char *ptr = NULL;
+	char *op = glob->tokens[1];
+	int uop = strcmp(glob->tokens[0], "INC") == 0 ? 1 : -1;
+
+	if (is_op_addr(op)) {
+		char addr[BUF_SZ];
+		memcpy(addr, &op[1], strlen(op) - 2);
+		int offset = (int)strtol(addr, NULL, 0);
+
+		mem_nodes_t *node = get_mem_node(glob, offset);
+		if (node) {
+			ptr = node->val;
+		}
+	}
+
+	if (is_op_reg(op) && !ptr) {
+		ptr = get_reg_ptr(glob, op);
+	}
+
+	if (!ptr) {
+		fprintf(stderr, "unary(): Invalid operand specified [%s].\n", op);
+		return 0;
+	}
+
+	char val[BUF_SZ];
+	memcpy(val, ptr, BUF_SZ);
+	sprintf(ptr, "%x", (int)strtol(val, 0, 16) + uop);
 	return 1;
 }
 
@@ -144,21 +192,51 @@ int xchg(glob_t *glob, char *buf, unsigned long size) {
 		return 0;
 	}
 
-	char *dest = get_reg_ptr(glob, glob->tokens[1]);
-	char *src_ = get_reg_ptr(glob, glob->tokens[2]);
+	assert(glob->n_op == 2);
+	char *dest = glob->tokens[1];
+	char *src  = glob->tokens[2];
 
-	if (!dest || !src_) {
-		return 0;
-	}
-	
-	char *temp = malloc(strlen(dest) + 1);
-	if (!temp) {
+	if ((!is_op_addr(dest) && !is_op_reg(dest)) || (!is_op_reg(src) &&
+	     !is_op_reg(src))) {
+		fprintf(stderr, "xchg(): Invalid operand(s).\n");
 		return 0;
 	}
 
-	strcpy(temp, dest);
-	strcpy(dest, src_);
-	strcpy(src_, temp);
-	free(temp);
+	if (is_op_reg(dest)) {
+		dest = get_reg_ptr(glob, dest);
+	}
+
+	if (is_op_reg(src)) {
+		src = get_reg_ptr(glob, src);
+	}
+
+	int offset1 = -1, offset2 = -1;
+	if (is_op_addr(dest)) {
+		char addr[BUF_SZ];
+		memcpy(addr, &dest[1], strlen(dest) - 2);
+		offset1 = (int)strtol(addr, NULL, 0);
+	}
+
+	if (is_op_addr(src)) {
+		char addr[BUF_SZ];
+		memcpy(addr, &src[1], strlen(src) - 2);
+		offset2 = (int)strtol(addr, NULL, 0);
+	}
+
+	mem_nodes_t *node = get_mem_node(glob, offset1);
+	if (node) {
+		dest = node->val;
+	}
+
+	node = get_mem_node(glob, offset2);
+	if (node) {
+		src = node->val;
+	}
+
+	char temp[BUF_SZ];
+	memcpy(temp, dest, BUF_SZ);
+	memcpy(dest, src, BUF_SZ);
+	memcpy(src, temp, BUF_SZ);
+
 	return 1;
 }
