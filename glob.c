@@ -99,9 +99,9 @@ void destroy_glob(glob_t *glob) {
  *          size - size of the buffer.
  * @return: int  - 0 if fail, 1 if success.
  */ 
-int get_mem_val(glob_t *glob, int addr, char *buf, unsigned long size) {
+mem_nodes_t* get_mem_node(glob_t *glob, int addr) {
 	if (!glob) {
-		fprintf(stderr, "get_mem_val(): glob - nullptr.\n");
+		fprintf(stderr, "get_mem_node(): glob - nullptr.\n");
 		return 0;
 	}
 
@@ -109,14 +109,13 @@ int get_mem_val(glob_t *glob, int addr, char *buf, unsigned long size) {
 	while (node) {
 		int pa = (node->seg * 10) + node->offset;
 		if (pa == addr) {
-			memcpy(buf, node->val, size);
-			return 1;
+			return node;
 		}
 
 		node = node->next;
 	}
 
-	return 0;
+	return NULL;
 }
 
 /**
@@ -152,7 +151,13 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		memset(addr, 0, sizeof(addr));
 		memcpy(addr, &op[1], strlen(op) - 2);
 
-		return get_mem_val(glob, (int)strtol(addr, NULL, 0), buf, size);
+		mem_nodes_t *node = get_mem_node(glob, (int)strtol(addr, NULL, 0));
+		if (node) {
+			memcpy(buf, node->val, BUF_SZ);
+			return 1;
+		}
+
+		return 0;
 	}
 
 	if (is_op_reg(op)) {
