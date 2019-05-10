@@ -33,6 +33,7 @@ typedef struct mem_nodes {
 } mem_nodes_t;
 
 typedef struct mem {
+	int ds, es;
 	mem_nodes_t *head;
 } mem_t;
 
