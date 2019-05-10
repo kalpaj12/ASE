@@ -6,6 +6,8 @@
  *          Manipal University - 2019
  */
 
+#define BUILD 1905
+
 #include <assert.h>
 #include <getopt.h>
 #include <stdio.h>
@@ -22,7 +24,7 @@
 void parse_args(glob_t *glob, int argc, char **argv) {
 	int opt;
 	int flags = 0, mem = 0, reg = 0, stack = 0;
-	while ((opt = getopt(argc, argv, "afmrs")) != -1) {
+	while ((opt = getopt(argc, argv, "afmrsv")) != -1) {
 		switch (opt) {
 		case 'a': {
 			flags = mem = reg = stack = 1;
@@ -33,6 +35,10 @@ void parse_args(glob_t *glob, int argc, char **argv) {
 		case 'm': mem   = 1; break;
 		case 'r': reg   = 1; break;
 		case 's': stack = 1; break;
+		case 'v': {
+			printf("Build : %d \nAuthor: Pawan Kartik, Manipal.\n", BUILD);
+			break;
+		}
 		}
 	}
 
@@ -50,7 +56,8 @@ void show_flags() {
 		-f : Show flag contents \n\
 		-m : Show memory contents \n\
 		-r : Show register contents \n\
-		-s : Show stack contents\n");
+		-s : Show stack contents\n\
+		-v : Show version info\n");
 }
 
 int main(int argc, char **argv) {
@@ -62,6 +69,11 @@ int main(int argc, char **argv) {
 	}
 
 	if (argc == 2) {
+		if (strstr(argv[1], "-")) {
+			parse_args(NULL, argc, argv);
+			return 0;
+		}
+
 		fprintf(stderr, "Warning: Missing program flag(s)?\n");
 	}
 
