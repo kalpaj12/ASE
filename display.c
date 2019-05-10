@@ -18,7 +18,6 @@
  */ 
 void display(glob_t *glob, int flags, int mem, int reg, int stack) {
 	if (!glob) {
-		fprintf(stderr, "display(): glob - nullptr.\n");
 		return;
 	}
 
