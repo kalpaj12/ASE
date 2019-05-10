@@ -33,6 +33,10 @@ mem_nodes_t* add_to_mem(glob_t *glob, int seg, int offset) {
 		return NULL;
 	}
 
+	if (!glob->mem->ds || !glob->mem->es) {
+		fprintf(stderr, "add_to_mem(): Did not init [D/E]S?\n");
+	}
+
 	node->next = NULL;
 	node->seg  = seg;
 	node->offset = offset;
@@ -288,6 +292,7 @@ glob_t *init_glob(FILE *fd) {
 	glob->stack->top = -1;
 	glob->c_line = glob->p_len = 0;
 
+	glob->mem->ds = glob->mem->es = 0;
 	memset(glob->flags, 0, sizeof(flags_t));
 	return glob;
 }
