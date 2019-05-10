@@ -28,6 +28,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "CMP",  math_op));
 	assert(register_entry(table, "DEC",  unary));
 	assert(register_entry(table, "HLT",  hlt));
+	assert(register_entry(table, "IN",   nop));
 	assert(register_entry(table, "INC",  unary));
 	assert(register_entry(table, "JCXZ", jump_cx));
 	assert(register_entry(table, "JC",   jump_jx));
@@ -41,6 +42,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "MUL",  math_op));
 	assert(register_entry(table, "NEG",  neg));
 	assert(register_entry(table, "NOP",  nop));
+	assert(register_entry(table, "OUT",  nop));
 	assert(register_entry(table, "POP",  pop));
 	assert(register_entry(table, "PUSH", push));
 	assert(register_entry(table, "STC",  set_flag));
