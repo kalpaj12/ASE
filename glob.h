@@ -23,7 +23,7 @@
 #define REG_DX "DX"
 
 typedef struct flags {
-	int af, cf, df, iif, pf, zf;
+	int af, cf, df, iif, pf, sf, zf;
 } flags_t;
 
 typedef struct mem_nodes {
@@ -80,5 +80,6 @@ mem_nodes_t *get_mem_node (glob_t *glob, int addr);
 int          get_op_val   (glob_t *glob, char *op, char *buf, unsigned long size);
 char        *get_reg_ptr  (glob_t *glob, char *reg);
 glob_t      *init_glob    (FILE   *fd);
+int          lahf         (glob_t *glob, char *buf, unsigned long size);
 
 #endif

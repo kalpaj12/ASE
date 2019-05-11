@@ -264,7 +264,7 @@ char *get_reg_ptr(glob_t *glob, char *reg) {
 
 /**
  * @desc  : Init parent and child structures.
- * @param : none
+ * @param : fd - file descriptor of source file.
  * @return: void
  */
 glob_t *init_glob(FILE *fd) {
@@ -295,4 +295,28 @@ glob_t *init_glob(FILE *fd) {
 	glob->mem->ds = glob->mem->es = 0;
 	memset(glob->flags, 0, sizeof(flags_t));
 	return glob;
+}
+
+/**
+ * @desc  : Implements the LAHF instruction.
+ * @param : glob -
+ *          buf  - unused
+ *          size - unused
+ * @return: int  - 0 if fail, 1 if success.
+ */
+int lahf(glob_t *glob, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "lahf(): glob - nullptr.\n");
+		return 0;
+	}
+
+	assert(glob->n_op == 0);
+	sprintf(glob->registers->ax, "%d%d%d%d%d",
+		glob->flags->sf,
+		glob->flags->zf,
+		glob->flags->af,
+		glob->flags->pf,
+		glob->flags->cf);
+
+	return 1;
 }
