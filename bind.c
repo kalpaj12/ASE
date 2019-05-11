@@ -38,6 +38,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "JP",   jump_jx));
 	assert(register_entry(table, "JPE",  jump_jx));
 	assert(register_entry(table, "JMP",  jump));
+	assert(register_entry(table, "LAHF", lahf));
 	assert(register_entry(table, "MOV",  move));
 	assert(register_entry(table, "MUL",  math_op));
 	assert(register_entry(table, "NEG",  neg));
