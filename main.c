@@ -21,10 +21,21 @@
 #include "stack.h"
 #include "tengine.h"
 
+void show_flags() {
+  fprintf(stderr, "Supported flags: \n\
+		-a : Enable all (below) emulator specified flags \n\
+		-f : Show flag contents \n\
+		-h : Show help (this) screen \n\
+		-m : Show memory contents \n\
+		-r : Show register contents \n\
+		-s : Show stack contents\n\
+		-v : Show version info\n");
+}
+
 void parse_args(glob_t *glob, int argc, char **argv) {
 	int opt;
 	int flags = 0, mem = 0, reg = 0, stack = 0;
-	while ((opt = getopt(argc, argv, "afmrsv")) != -1) {
+	while ((opt = getopt(argc, argv, "afhmrsv")) != -1) {
 		switch (opt) {
 		case 'a': {
 			flags = mem = reg = stack = 1;
@@ -32,6 +43,7 @@ void parse_args(glob_t *glob, int argc, char **argv) {
 		}
 
 		case 'f': flags = 1; break;
+		case 'h': show_flags(); break;
 		case 'm': mem   = 1; break;
 		case 'r': reg   = 1; break;
 		case 's': stack = 1; break;
@@ -48,16 +60,6 @@ void parse_args(glob_t *glob, int argc, char **argv) {
 			fprintf(stderr, "Ignore extra argument: %s\n", argv[optind]);
 		}
 	}
-}
-
-void show_flags() {
-	fprintf(stderr, "Supported flags: \n\
-		-a : Enable all (below) flags \n\
-		-f : Show flag contents \n\
-		-m : Show memory contents \n\
-		-r : Show register contents \n\
-		-s : Show stack contents\n\
-		-v : Show version info\n");
 }
 
 int main(int argc, char **argv) {
