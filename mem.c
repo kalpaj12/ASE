@@ -12,6 +12,8 @@
 
 #include "mem.h"
 
+#define SET_BITS(x) __builtin_popcount(x)
+
 /**
  * @desc  : Implements the HLT instruction.
  * @param : glob - unused
@@ -71,7 +73,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 		}
 
 		int offset = (int)strtol(addr, NULL, 0);
-		dest = add_to_mem(glob, 0, offset)->val;
+		dest = add_to_mem(glob, glob->mem->ds, offset)->val;
 	}
 
 	if (is_op_reg(dest)) {
