@@ -229,7 +229,20 @@ int xchg(glob_t *glob, char *buf, unsigned long size) {
 		if (node) {
 			dest = node->val;
 		} else {
-			fprintf(stderr, "xchg(): Invalid offset %d.\n", offset);
+			
+			if (!glob->mem->warned) {
+				fprintf(stderr, "xchg(): Using uninitialised memory location [%d:%d]\n",
+				glob->mem->ds,
+				offset);
+			}
+
+			mem_nodes_t *node = add_to_mem(glob, glob->mem->ds, offset);
+			node->seg = glob->mem->ds;
+			node->offset = offset;
+			node->addr = (node->seg * 10) + node->offset;
+			strcpy(node->val, "0");
+
+			dest = node->val;
 		}
 	}
 
