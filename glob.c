@@ -290,7 +290,7 @@ glob_t *init_glob(FILE *fd) {
 	assert(glob->registers);
 
 	glob->fd = fd;
-	glob->stack->top = -1;
+	glob->bpnt = glob->stack->top = -1;
 	glob->c_line = glob->p_len = 0;
 
 	glob->mem->ds = glob->mem->es = 0;

@@ -48,7 +48,7 @@ typedef struct registers {
 } registers_t;
 
 typedef struct glob {
-	int n_op;
+	int bpnt, n_op;
 	FILE *fd;
 
 	/**
