@@ -211,27 +211,22 @@ int xchg(glob_t *glob, char *buf, unsigned long size) {
 		src = get_reg_ptr(glob, src);
 	}
 
-	int offset1 = -1, offset2 = -1;
+	int offset = -1;
 	if (is_op_addr(dest)) {
 		char addr[BUF_SZ];
 		memcpy(addr, &dest[1], strlen(dest) - 2);
-		offset1 = (int)strtol(addr, NULL, 0);
+		offset = (int)strtol(addr, NULL, 0);
 	}
 
 	if (is_op_addr(src)) {
 		char addr[BUF_SZ];
 		memcpy(addr, &src[1], strlen(src) - 2);
-		offset2 = (int)strtol(addr, NULL, 0);
+		offset = (int)strtol(addr, NULL, 0);
 	}
 
-	mem_nodes_t *node = get_mem_node(glob, offset1);
+	mem_nodes_t *node = get_mem_node(glob, offset);
 	if (node) {
 		dest = node->val;
-	}
-
-	node = get_mem_node(glob, offset2);
-	if (node) {
-		src = node->val;
 	}
 
 	char temp[BUF_SZ];
