@@ -40,6 +40,7 @@ void display(glob_t *glob, args_t p_args) {
 		printf("[DF]:[%d]\n",   glob->flags->df);
 		printf("[IF]:[%d]\n",   glob->flags->iif);
 		printf("[PF]:[%d]\n",   glob->flags->pf);
+		printf("[SF]:[%d]\n",   glob->flags->sf);
 		printf("[ZF]:[%d]\n\n", glob->flags->zf);
 	}
 

@@ -321,3 +321,26 @@ int lahf(glob_t *glob, char *buf, unsigned long size) {
 
 	return 1;
 }
+
+/**
+ * @desc  : Implements the SAHF instruction.
+ * @param : glob -
+ *          buf  - unused
+ *          size - unused
+ * @return: int  - 0 if fail, 1 if success.
+ */
+int sahf(glob_t *glob, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "sahf(): glob - nullptr.\n");
+		return 0;
+	}
+
+	assert(glob->n_op == 0);
+	glob->flags->sf = glob->registers->ax[0] == '1';
+	glob->flags->zf = glob->registers->ax[1] == '1';
+	glob->flags->af = glob->registers->ax[2] == '1';
+	glob->flags->pf = glob->registers->ax[3] == '1';
+	glob->flags->cf = glob->registers->ax[4] == '1';
+
+	return 1;
+}
