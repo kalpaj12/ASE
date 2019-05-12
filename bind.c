@@ -46,6 +46,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "OUT",  nop));
 	assert(register_entry(table, "POP",  pop));
 	assert(register_entry(table, "PUSH", push));
+	assert(register_entry(table, "SAHF", sahf));
 	assert(register_entry(table, "STC",  set_flag));
 	assert(register_entry(table, "STD",  set_flag));
 	assert(register_entry(table, "STI",  set_flag));
