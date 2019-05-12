@@ -224,9 +224,13 @@ int xchg(glob_t *glob, char *buf, unsigned long size) {
 		offset = (int)strtol(addr, NULL, 0);
 	}
 
-	mem_nodes_t *node = get_mem_node(glob, offset);
-	if (node) {
-		dest = node->val;
+	if (offset != -1) {
+		mem_nodes_t *node = get_mem_node(glob, offset);
+		if (node) {
+			dest = node->val;
+		} else {
+			fprintf(stderr, "xchg(): Invalid offset %d.\n", offset);
+		}
 	}
 
 	char temp[BUF_SZ];
