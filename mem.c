@@ -198,9 +198,8 @@ int xchg(glob_t *glob, char *buf, unsigned long size) {
 	char *dest = glob->tokens[1];
 	char *src  = glob->tokens[2];
 
-	if ((!is_op_addr(dest) && !is_op_reg(dest)) || (!is_op_reg(src) &&
-	     !is_op_reg(src))) {
-		fprintf(stderr, "xchg(): Invalid operand(s).\n");
+	if (is_op_addr(src) && is_op_addr(dest)) {
+		fprintf(stderr, "xchg(): Both the operands cannot be memory addresses.\n");
 		return 0;
 	}
 
