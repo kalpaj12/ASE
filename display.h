@@ -10,6 +10,11 @@
 #include "glob.h"
 #include "parse.h"
 
-void display(glob_t *glob, int flags, int mem, int reg, int stack);
+typedef struct args_ {
+	int a, f, h, m, r, s, v;
+} args_t;
+
+void display    (glob_t *glob, args_t p_args);
+void show_flags (void);
 
 #endif

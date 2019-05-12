@@ -6,11 +6,10 @@
  *          Manipal University - 2019
  */
 
-#define BUILD 1905
-
 #include <assert.h>
 #include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "bind.h"
@@ -21,43 +20,40 @@
 #include "stack.h"
 #include "tengine.h"
 
-void show_flags() {
-  fprintf(stderr, "Supported flags: \n\
-		-a : Enable all (below) emulator specified flags \n\
-		-f : Show flag contents \n\
-		-h : Show help (this) screen \n\
-		-m : Show memory contents \n\
-		-r : Show register contents \n\
-		-s : Show stack contents\n\
-		-v : Show version info\n");
-}
-
-void parse_args(glob_t *glob, int argc, char **argv) {
+void parse_args(glob_t *glob, int argc, char **argv, args_t *p_args) {
 	int opt;
-	int flags = 0, mem = 0, reg = 0, stack = 0;
-	while ((opt = getopt(argc, argv, "afhmrsv")) != -1) {
-		switch (opt) {
-		case 'a': {
-			flags = mem = reg = stack = 1;
-			break;
-		}
+	int idx = 0;
+	struct option long_opt[] = 
+	{
+		{"all-flags", no_argument, 0, 'a'},
+		{"no-warns",  no_argument, 0, 'w'},
+		{0, 0, 0, 0}
+	};
 
-		case 'f': flags = 1; break;
-		case 'h': show_flags(); break;
-		case 'm': mem   = 1; break;
-		case 'r': reg   = 1; break;
-		case 's': stack = 1; break;
-		case 'v': {
-			printf("Build : %d \nAuthor: Pawan Kartik, Manipal.\n", BUILD);
-			break;
-		}
+	while ((opt = getopt_long(argc, argv, "ab:fhmrsvw", long_opt, &idx)) != -1) {
+		switch (opt) {
+		case 'a': p_args->f  = p_args->m = p_args->r = p_args->s = 1; break;
+
+		/**
+		 * TODO
+		 * Allow user to set a break point.
+		 */
+		case 'b': glob->bpnt = (int)strtol(optarg, NULL, 0); break;
+		case 'f': p_args->f  = 1; break;
+		case 'h': p_args->h  = 1; break;
+		case 'm': p_args->m  = 1; break;
+		case 'r': p_args->r  = 1; break;
+		case 's': p_args->s  = 1; break;
+		case 'v': p_args->v  = 1; break;
+		
+		/* Turn off warnings */
+		case 'w': glob->mem->warned = 1; break;
 		}
 	}
 
-	(void) display(glob, flags, mem, reg, stack);
 	for (; optind < argc; optind++) {
 		if (!strstr(argv[optind], ".asm")) {
-			fprintf(stderr, "Ignore extra argument: %s\n", argv[optind]);
+			fprintf(stderr, "Ignoring extra argument: %s\n", argv[optind]);
 		}
 	}
 }
@@ -71,14 +67,12 @@ int main(int argc, char **argv) {
 	}
 
 	if (argc == 2) {
-		if (strstr(argv[1], "-")) {
-			parse_args(NULL, argc, argv);
-			return 0;
+		if (!strstr(argv[1], "-")) {
+			fprintf(stderr, "Warning: Missing program flag(s)?\n");
 		}
-
-		fprintf(stderr, "Warning: Missing program flag(s)?\n");
 	}
 
+	args_t args_ = {0};
 	table_t *table = init_table();
 	bind_calls(table);
 	FILE *fd = fopen(argv[1], "r");
@@ -93,6 +87,7 @@ int main(int argc, char **argv) {
 	glob_t *glob = init_glob(fd);
 	memset(line, 0, sizeof(line));
 
+	parse_args(glob, argc, argv, &args_);
 	while (fgets(line, sizeof(line), fd) != NULL) {
 		if (should_skip_ln(line)) {
 			continue;
@@ -121,7 +116,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* Program ends here. */
-	parse_args(glob, argc, argv);
+	display(glob, args_);
 
 	/* Close existing file handles and clear out alloc'ed memory. */
 	fclose(fd);
