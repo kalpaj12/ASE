@@ -33,7 +33,7 @@ mem_nodes_t* add_to_mem(glob_t *glob, int seg, int offset) {
 		return NULL;
 	}
 
-	if ((!glob->mem->ds || !glob->mem->es) && !glob->mem->warned) {
+	if ((!glob->mem->ds || !glob->mem->es) && !glob->mem->warned && !getenv("DIW")) {
 		fprintf(stderr, "add_to_mem(): Did not init [D/E]S?\n");
 		glob->mem->warned = 1;
 	}
