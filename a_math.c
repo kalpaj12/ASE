@@ -67,6 +67,7 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 		if (strlen(res) > 4) {
 			strcpy(res, "0");
 			glob->flags->of = 1;
+			return 1;
 		}
 	} else if (strcmp(inst, SUB) == 0) {
 		/* Answer is 0. Set zero flag */
