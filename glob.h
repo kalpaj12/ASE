@@ -23,7 +23,7 @@
 #define REG_DX "DX"
 
 typedef struct flags {
-	int af, cf, df, iif, pf, sf, zf;
+	int af, cf, df, iif, of, pf, sf, zf;
 } flags_t;
 
 typedef struct mem_nodes {
