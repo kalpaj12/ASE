@@ -201,7 +201,16 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 
 		char temp[BUF_SZ];
 		memset(temp, 0, sizeof(temp));
-		sprintf(temp, "%x", (int)strtol(op, NULL, 0));
+		int val = (int)strtol(op, NULL, 0);
+
+		/* Check for overflow */
+		if (val > 65535) {
+			fprintf(stderr, "get_op_val(): Operand value too large [%s].\n", op);
+			glob->flags->of = 1;
+			return 1;
+		}
+
+		sprintf(temp, "%x", val);
 
 		/**
 		 * If the final answer is > 4 hex bits, last 4 bits reside as
