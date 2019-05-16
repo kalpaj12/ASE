@@ -205,6 +205,8 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		
 		if (__builtin_popcount(val) % 2 == 0 && val != 0) {
 			glob->flags->pf = 1;
+		} else{
+			glob->flags->pf = 0;
 		}
 
 		if (val == 0) {
