@@ -314,7 +314,7 @@ int parse_line(glob_t *glob, char *line) {
 
 		/* There's no instruction that takes more than 2 operands. */
 		if (i > 2) {
-			fprintf(stderr, "More than required tokens.\n");
+			fprintf(stderr, "Exceeded token limit.\n");
 			return 0;
 		}
 
