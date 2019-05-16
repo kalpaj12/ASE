@@ -352,7 +352,8 @@ int parse_line(glob_t *glob, char *line) {
 			/* Clip off the end and return */
 			*end = '\0';
 			memcpy(glob->tokens[i], ptr, BUF_SZ);
-			return 1;
+			i++;
+			break;
 		}
 
 		char *back = &ptr[strlen(ptr) - 1];
