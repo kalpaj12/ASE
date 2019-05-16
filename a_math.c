@@ -65,6 +65,7 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 
 	if (strcmp(inst, ADD) == 0) {
 		int ans = c_dval + c_sval;
+		glob->flags->zf = ans == 0;
 		
 		if (ans > 65535 || ans < -65535) {
 			strcpy(res, "0");
