@@ -29,6 +29,7 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 		return 0;
 	}
 
+	int ret = 1;
 	/* Let AX (accumulator) be the default destination */
 	char *ptr = get_reg_ptr(glob, REG_AX);
 
@@ -63,11 +64,15 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 	int c_sval = (int)strtol(sval, NULL, 16);
 
 	if (strcmp(inst, ADD) == 0) {
-		sprintf(res, "%d", c_dval + c_sval);
-		if (strlen(res) > 4) {
+		int ans = c_dval + c_sval;
+		
+		if (ans > 65535 || ans < -65535) {
 			strcpy(res, "0");
 			glob->flags->of = 1;
-			return 1;
+			fprintf(stderr, "Overflow: operand value exceeds the limits.\n");
+			ret = 0;
+		} else {
+			sprintf(res, "%d", ans);
 		}
 	} else if (strcmp(inst, SUB) == 0) {
 		/* Answer is 0. Set zero flag */
@@ -123,5 +128,5 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 	set:
 	assert(ptr);
 
-	return get_op_val(glob, res, ptr, BUF_SZ);
+	return ret & get_op_val(glob, res, ptr, BUF_SZ);
 }
