@@ -212,7 +212,7 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		}
 
 		/* Check for overflow */
-		if (val > 65535 || val < -65535) {
+		if (val > 32767 || val < -32768) {
 			fprintf(stderr, "get_op_val(): Operand value too large [%s].\n", op);
 			glob->flags->of = 1;
 			return 1;

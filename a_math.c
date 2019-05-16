@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "a_math.h"
 
@@ -62,12 +63,15 @@ int math_op(glob_t *glob, char *buf, unsigned long size) {
 
 	int c_dval = (int)strtol(dval, NULL, 16);
 	int c_sval = (int)strtol(sval, NULL, 16);
+	
+	c_dval = (int16_t)c_dval;
+	c_sval = (int16_t)c_sval;
 
 	if (strcmp(inst, ADD) == 0) {
 		int ans = c_dval + c_sval;
 		glob->flags->zf = ans == 0;
 		
-		if (ans > 65535 || ans < -65535) {
+		if (ans > 32767 || ans < -32768) {
 			strcpy(res, "0");
 			glob->flags->of = 1;
 			fprintf(stderr, "Overflow: operand value exceeds the limits.\n");
