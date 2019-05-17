@@ -202,16 +202,11 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		char temp[BUF_SZ];
 		memset(temp, 0, sizeof(temp));
 		int val = (int)strtol(op, NULL, 0);
-		
-		if (__builtin_popcount(val) % 2 == 0 && val != 0) {
-			glob->flags->pf = 1;
-		} else{
-			glob->flags->pf = 0;
-		}
 
-		if (val == 0) {
-			glob->flags->zf = 1;
-		}
+
+		/* Set flag values */
+		glob->flags->pf = __builtin_popcount(val) % 2 == 0 && val != 0;
+		glob->flags->zf = val == 0;
 
 		/* Check for overflow */
 		if (val > 32767 || val < -32768) {
@@ -221,21 +216,14 @@ int get_op_val(glob_t *glob, char *op, char *buf, unsigned long size) {
 		}
 
 		sprintf(temp, "%x", val);
+		char *beg = temp;
 
-		/**
-		 * If the final answer is > 4 hex bits, last 4 bits reside as
-		 * usual in the chosen destination, while the rest len - 4 bits
-		 * are stored in DX (assuming the len - 4 can fit in DX). Else
-		 * the answer is beyond the range typical emulator(s) can handle.
-		 */
-		if (strlen(temp) <= 4) {
-			memcpy(buf, temp, BUF_SZ);
-		} else {
-			int idx = strlen(temp) - 4;
-			memcpy(glob->registers->dx, buf, idx);
-			memcpy(buf, &temp[idx], BUF_SZ);
+		if (strlen(temp) > 4) {
+			beg = &temp[strlen(temp) - 1];
+			beg -= 3;
 		}
-
+		
+		memcpy(buf, beg, BUF_SZ);
 		return 1;
 	}
 
