@@ -230,7 +230,7 @@ int xchg(glob_t *glob, char *buf, unsigned long size) {
 			dest = node->val;
 		} else {
 			
-			if (!glob->mem->warned) {
+			if (!glob->mem->warned && !getenv("DIW")) {
 				fprintf(stderr, "xchg(): Using uninitialised memory location [%d:%d]\n",
 				glob->mem->ds,
 				offset);
