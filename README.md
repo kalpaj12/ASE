@@ -54,22 +54,4 @@ STD
 ```
 
 ### Console output
-```
-Flags :
-[Flag]:[Bit value] - [CF]:[1]
-[Flag]:[Bit value] - [DF]:[1]
-[Flag]:[Bit value] - [IF]:[0]
-[Flag]:[Bit value] - [PF]:[0]
-
-Register:
-[AL] - [c]
-[BX] - [2694]
-[CX] - []
-[DX] - []
-
-Stack :
-[Addr]:[Value] - [0x12bd6b8]:[c]
-
-Note: Stack memory cleared.
-
-```
+![Alt text](/docs/images/ASE.png?raw=true "Title")
