@@ -12,8 +12,6 @@
 
 #include "mem.h"
 
-#define SET_BITS(x) __builtin_popcount(x)
-
 /**
  * @desc  : Implements the HLT instruction.
  * @param : glob - unused
