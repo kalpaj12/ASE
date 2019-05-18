@@ -2,11 +2,13 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "../flags.h"
 #include "../glob.h"
 #include "../mem.h"
 #include "../parse.h"
+#include "../a_math.h"
 
 int main(void) {
 	FILE *fd = fopen("tests/ph", "r");
@@ -28,6 +30,10 @@ int main(void) {
 	char l_5[] = "CLC";
 	char l_6[] = "CLD";
 	char l_7[] = "CLI";
+	char l_8[] = "MOV AX, 0";
+	char l_9[] = "ADD AX, 1";
+	char l_10[] = "MOV AX, -5";
+	char l_11[] = "ADD AX, 5";
 
 	parse_line(glob, l_1);
 	set_flag(glob, NULL, BUF_SZ);
@@ -77,8 +83,41 @@ int main(void) {
 		fprintf(stderr, "TEST: FLAGS - Could not clear IF flag.\n");
 		return 1;
 	}
-	
 
+	parse_line(glob, l_8);
+	move(glob, NULL, BUF_SZ);
+	if (!glob->flags->zf) {
+		fprintf(stderr, "TEST: Flags - Move did not trigger zf.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_9);
+	math_op(glob, NULL, BUF_SZ);
+	if (strcmp(glob->registers->ax, "1")) {
+		fprintf(stderr, "TEST: Flags - MOV AX failed.\n");
+		return 1;
+	}
+
+	if (glob->flags->zf != 0) {
+		fprintf(stderr, "TEST: Flags - zf did not change after MOV.\n");
+		return 1;
+	}
+
+	parse_line(glob, l_10);
+	move(glob, NULL, BUF_SZ);
+	
+	parse_line(glob, l_11);
+	math_op(glob, NULL, BUF_SZ);
+	if (strcmp(glob->registers->ax, "0")) {
+		fprintf(stderr, "TEST: Flags - AX doesn't equal to 0. Error parsing -ve numbers.\n");
+		return 1;
+	}
+
+	if (glob->flags->zf != 1) {
+		fprintf(stderr, "TEST: Flags - zf did not change after MOV.\n");
+		return 1;
+	}
+	
 	fclose(fd);
 	return 0;
 }
