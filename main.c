@@ -30,7 +30,7 @@ void parse_args(glob_t *glob, int argc, char **argv, args_t *p_args) {
 		{0, 0, 0, 0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "ab:fhmrsvwd", long_opt, &idx)) != -1) {
+	while ((opt = getopt_long(argc, argv, "ab:fhmrsvw", long_opt, &idx)) != -1) {
 		switch (opt) {
 		case 'a': p_args->f  = p_args->m = p_args->r = p_args->s = 1; break;
 
@@ -48,9 +48,6 @@ void parse_args(glob_t *glob, int argc, char **argv, args_t *p_args) {
 		
 		/* Turn off warnings */
 		case 'w': glob->mem->warned = 1; break;
-
-		/* Debug Mode */
-		case 'd': glob->debug_mode = 1; break;
 		}
 	}
 
@@ -91,11 +88,6 @@ int main(int argc, char **argv) {
 	memset(line, 0, sizeof(line));
 
 	parse_args(glob, argc, argv, &args_);
-	
-	if(glob->debug_mode) {
-		printf("\nDebug Mode\n\n");
-	}
-
 	while (fgets(line, sizeof(line), fd) != NULL) {
 		if (should_skip_ln(line)) {
 			continue;
