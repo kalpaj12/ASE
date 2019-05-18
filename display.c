@@ -34,14 +34,6 @@ void display(glob_t *glob, args_t p_args) {
 		return;
 	}
 
-	if (p_args.h) {
-		show_flags();
-	}
-
-	if (p_args.v) {
-		printf("Build : %d\nAuthor: Pawan Kartik\n", BUILD);
-	}
-	
 	if (p_args.f && glob->flags) {
 		printf("Flags:\n");
 		printf("[CF]:[%d]\n",   glob->flags->cf);
@@ -95,5 +87,13 @@ void display(glob_t *glob, args_t p_args) {
 			printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
 			node = node->next;
 		}
+	}
+
+	if (p_args.h) {
+		show_flags();
+	}
+
+	if (p_args.v) {
+		printf("Build : %d\nAuthor: Pawan Kartik\n", BUILD);
 	}
 }
