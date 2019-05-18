@@ -48,6 +48,7 @@ typedef struct registers {
 } registers_t;
 
 typedef struct glob {
+	int debug_mode;
 	int bpnt, n_op;
 	FILE *fd;
 
