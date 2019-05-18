@@ -126,7 +126,18 @@ int main(int argc, char **argv) {
 
 		if(continue_execution){
 			if(glob->debug_mode){
-				printf("\nEvaluating instruction: [%s %s %s]\n",glob->tokens[0],glob->tokens[1],glob->tokens[2]);
+				char current_instruction[BUF_SZ*3];
+				
+				if(!strcmp(glob->tokens[2], "") && strcmp(glob->tokens[1], "")) {
+					sprintf(current_instruction, "%s %s", glob->tokens[0], glob->tokens[1]);				
+				} else if (!strcmp(glob->tokens[1], "")){
+					sprintf(current_instruction, "%s", glob->tokens[0]);
+				} else {
+					sprintf(current_instruction, "%s %s %s", glob->tokens[0], glob->tokens[1], glob->tokens[2]);
+				}
+				
+				printf("\nEvaluating instruction: [%s]\n", current_instruction);
+
 				char debug_char = getchar();
 			
 				while(debug_char != 'c'){
