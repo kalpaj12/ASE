@@ -8,7 +8,7 @@ fail=0
 for file in tests/*.c;
 do
 	echo "Running tests: $file"
-	gcc "$file" flags.c glob.c mem.c parse.c stack.c
+	gcc "$file" a_math.c flags.c glob.c mem.c parse.c stack.c
 	./a.out
 
 	if [ $? -eq 1 ]
@@ -19,3 +19,6 @@ do
 done
 
 rm a.out
+
+echo
+echo "Total failed test cases: $fail"
