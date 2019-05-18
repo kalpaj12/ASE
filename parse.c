@@ -377,6 +377,33 @@ int parse_line(glob_t *glob, char *line) {
 
 		l1:
 		ptr = strtok(NULL, " ");
+
+		if(glob->debug_mode) {
+			printf("Evaluating instruction: [%s]\n",glob->tokens[i-1]);
+			printf("Press key down to continue:\n");
+			
+			char debug_char = getchar();
+			
+			while(debug_char != 66){
+				debug_char = getchar();
+			}
+
+			printf("Flags:\n");
+			printf("[CF]:[%d]\n",   glob->flags->cf);
+			printf("[DF]:[%d]\n",   glob->flags->df);
+			printf("[IF]:[%d]\n",   glob->flags->iif);
+			printf("[OF]:[%d]\n",   glob->flags->of);
+			printf("[PF]:[%d]\n",   glob->flags->pf);
+			printf("[SF]:[%d]\n",   glob->flags->sf);
+			printf("[ZF]:[%d]\n\n", glob->flags->zf);
+
+			printf("Register:\n");
+			printf("[AX]:[%s]\n",   glob->registers->ax);
+			printf("[BX]:[%s]\n",   glob->registers->bx);
+			printf("[CX]:[%s]\n",   glob->registers->cx);
+			printf("[DX]:[%s]\n\n", glob->registers->dx);
+	
+		}
 	}
 
 	glob->n_op = i - 1;
