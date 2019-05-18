@@ -385,7 +385,6 @@ int parse_line(glob_t *glob, char *line) {
 			char debug_char = getchar();
 			
 			while(debug_char != 66){
-				printf("Invalid Command\n");
 				debug_char = getchar();
 			}
 
