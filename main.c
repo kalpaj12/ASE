@@ -94,12 +94,13 @@ int main(int argc, char **argv) {
 	char line[1024];
 	glob_t *glob = init_glob(fd);
 	memset(line, 0, sizeof(line));
-	
+
 	parse_args(glob, argc, argv, &args_);
 
 	if(glob->debug_mode) {
 		printf("\nDebug Mode\n\n");
 		printf("1. Press 'c' to continue:\n");
+		//Will add additional useable commands.
 	}
 	
 	while (fgets(line, sizeof(line), fd) != NULL) {
@@ -124,22 +125,17 @@ int main(int argc, char **argv) {
 		}
 
 		if(continue_execution){
-			
 			if(glob->debug_mode){
+				printf("\nEvaluating instruction: [%s %s %s]\n",glob->tokens[0],glob->tokens[1],glob->tokens[2]);
+				char debug_char = getchar();
 			
-			printf("\nEvaluating instruction: [%s %s %s]\n",glob->tokens[0],glob->tokens[1],glob->tokens[2]);
-			
-			char debug_char = getchar();
-			
-			while(debug_char != 'c'){
-				debug_char = getchar();
-			}
+				while(debug_char != 'c'){
+					debug_char = getchar();
+				}
 
-			printf("\n");
-			display(glob, args_);
-			
+				printf("\n");
+				display(glob, args_);
 			}
-
 		} else {
 			break;
 		}
