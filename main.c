@@ -90,17 +90,14 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	int flag = 0, continue_execution = 1;
+	int flag = 0, exec = 1;
 	char line[1024];
 	glob_t *glob = init_glob(fd);
 	memset(line, 0, sizeof(line));
-
 	parse_args(glob, argc, argv, &args_);
 
 	if(glob->debug_mode) {
-		printf("\nDebug Mode\n\n");
-		printf("1. Press 'c' to continue:\n");
-		//Will add additional useable commands.
+		printf("Debug Mode. Press 'c' to continue.\n\n");
 	}
 	
 	while (fgets(line, sizeof(line), fd) != NULL) {
@@ -111,44 +108,29 @@ int main(int argc, char **argv) {
 		if (!parse_line(glob, line)) {
 			fprintf(stderr, "Could not parse line.\n");
 			flag = 1;
-			continue_execution = 0;
+			exec = 0;
 		}
 
 		int ret = call_by_name(table, glob, NULL, (unsigned long)BUF_SZ);
 		if (ret == -1) {
-			continue_execution = 0;
+			exec = 0;
 		}
 
 		if (!ret) {
 			flag = 1;
-			continue_execution = 0;
+			exec = 0;
 		}
 
-		if(continue_execution){
-			if(glob->debug_mode){
-				char current_instruction[BUF_SZ*3];
-				
-				if(!strcmp(glob->tokens[2], "") && strcmp(glob->tokens[1], "")) {
-					sprintf(current_instruction, "%s %s", glob->tokens[0], glob->tokens[1]);				
-				} else if (!strcmp(glob->tokens[1], "")){
-					sprintf(current_instruction, "%s", glob->tokens[0]);
-				} else {
-					sprintf(current_instruction, "%s %s %s", glob->tokens[0], glob->tokens[1], glob->tokens[2]);
-				}
-				
-				printf("\nEvaluating instruction: [%s]\n", current_instruction);
+		if (exec && glob->debug_mode) {
+			printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
+				glob->tokens[2]);
 
-				char debug_char = getchar();
-			
-				while(debug_char != 'c'){
-					debug_char = getchar();
-				}
-
-				printf("\n");
-				display(glob, args_);
+			char ch = getchar();
+			while(ch != 'c'){
+				ch = getchar();
 			}
-		} else {
-			break;
+
+			display(glob, args_);
 		}
 	}
 
