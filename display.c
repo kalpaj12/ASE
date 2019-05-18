@@ -76,14 +76,10 @@ void display(glob_t *glob, args_t p_args) {
 
 	skip:
 	if (p_args.m && glob->mem) {
-		if (!glob->mem->head) {
-			return;
-		}
-		
 		printf("Memory:\n");
 		mem_nodes_t *node = glob->mem->head;
 		
-		while (node) {
+		while (node && glob) {
 			printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
 			node = node->next;
 		}
