@@ -381,8 +381,11 @@ int parse_line(glob_t *glob, char *line) {
 		if(glob->debug_mode) {
 			printf("Evaluating instruction: [%s]\n",glob->tokens[i-1]);
 			printf("Press key down to continue:\n");
+			
 			char debug_char = getchar();
+			
 			while(debug_char != 66){
+				printf("Invalid Command\n");
 				debug_char = getchar();
 			}
 
