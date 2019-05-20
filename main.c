@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 	memset(line, 0, sizeof(line));
 	parse_args(glob, argc, argv, &args_);
 
-	if(glob->debug_mode) {
+	if (glob->debug_mode) {
 		printf("Debug Mode. Press 'c' to continue.\n\n");
 	}
 	
@@ -121,16 +121,23 @@ int main(int argc, char **argv) {
 			exec = 0;
 		}
 
-		if (exec && glob->debug_mode) {
-			printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
-				glob->tokens[2]);
+		if (exec) {
+			/* Debug mode is called only if there are no bad returns */
+			if (glob->debug_mode) {
+				printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
+					glob->tokens[2]);
 
-			char ch = getchar();
-			while(ch != 'c'){
-				ch = getchar();
+				char ch = getchar();
+				while (ch != 'c') {
+					ch = getchar();
+				}
+
+				display(glob, args_);
 			}
-
-			display(glob, args_);
+			
+		} else {
+			/* When exec = 0, we have a bad return from above function calls, hence we exit the while loop */ 
+			break;
 		}
 	}
 
@@ -139,8 +146,8 @@ int main(int argc, char **argv) {
 			++glob->c_line);
 	}
 
-	if(glob->debug_mode){
-		printf(ANSI_COLOR_GREEN "\n\nResult\n");
+	if (glob->debug_mode) {
+		printf("\n\nResult\n" ANSI_COLOR_GREEN);
 	}
 	/* Program ends here. */
 	display(glob, args_);
