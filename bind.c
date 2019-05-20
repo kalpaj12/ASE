@@ -43,7 +43,7 @@ void bind_calls(table_t *table) {
 	assert(register_entry(table, "MUL",  math_op));
 	assert(register_entry(table, "NEG",  neg));
 	assert(register_entry(table, "NOP",  nop));
-	assert(register_entry(table, "ORG",  nop));
+	assert(register_entry(table, "ORG",  org));
 	assert(register_entry(table, "OUT",  nop));
 	assert(register_entry(table, "POP",  pop));
 	assert(register_entry(table, "PUSH", push));
