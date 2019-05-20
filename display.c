@@ -63,7 +63,8 @@ void display(glob_t *glob, args_t p_args) {
 			printf("Stack:\n");
 		}
 
-		while (*ptr) {
+		int stack_size = glob->stack->top + 1;
+		while (stack_size--) {
 			char **ref = ptr;
 			printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
 			if (!*ptr)

@@ -52,7 +52,7 @@ int pop(glob_t *glob, char *buf, unsigned long size) {
 	assert(dest);
 	int idx = glob->stack->top--;
 	if (idx == -1) {
-		fprintf(stderr, "Illegal instruction: PUSH before POP.\n");
+		fprintf(stderr, "Illegal instruction: POP before PUSH.\n");
 		return 0;
 	}
 	
