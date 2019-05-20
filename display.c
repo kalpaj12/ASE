@@ -16,6 +16,7 @@
 void show_flags() {
   fprintf(stderr, "Supported flags: \n\
 		-a : Enable all (below) emulator specified flags \n\
+		-d : Enable debug mode \n\
 		-f : Show flag contents \n\
 		-h : Show help (this) screen \n\
 		-m : Show memory contents \n\
