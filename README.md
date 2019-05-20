@@ -8,7 +8,12 @@ instructions - Move, jump, set/clear flag values etc.
 
 Run the provided build script `./build.sh`.
 
-You will need a decent C compiler (gcc/clang). ASE cannot be built for Windows as it relies on `getopt` to parse command-line arguments. However you can build ASE from within WSL.
+Building ASE generates some warnings (not the C language's warnings, but the functions in the ASE itself generate them). You can silence them by executing `export DIW=TRUE` before running the build script. Note that you might need to `unset` it before running your programs or else your runtime warnings will be silenced too.
+
+### Compiler support:
+You will need a decent C compiler. ASE relies on compiler specific functions such as `__builtin_popcount` which are not standardised. Any fairly decent compiler such as GCC or Clang should support them.
+
+If you wish to build ASE for Windows, you'll need a GCC port or WSL. ASE remains un-tested for GCC ports.
 
 ### Running ASE:
 
@@ -16,14 +21,14 @@ You will need a decent C compiler (gcc/clang). ASE cannot be built for Windows a
 
 ### Supported command line args
 ```
--a --all-flags: Enable all (below) emulator specific flags
+-a : Enable all (below) emulator specified flags
+-d : Enable debug mode
 -f : Show flag contents
 -h : Show help (this) screen
 -m : Show memory contents
 -r : Show register contents
 -s : Show stack contents
 -v : Show version info
--w --no-warns: Disable warnings
 ```
 
 Note: Warnings are generated for:
@@ -36,12 +41,9 @@ Disabling warnings is not recommended.
 ### Sample program
 
 ```asm
-;; Sample progam to demonstrate ASE.
-;; Note that ASE does not really run the asm code at the h/w
-;; level but instead parses the source file, tokenises it and
-;; runs the parser giving you the feel that the code is running.
+ORG 100h
 
-MOV AL, 12
+MOV AL, 12         ; This is a comment line!
 MOV BX, 9876
 
 STC
