@@ -16,6 +16,7 @@
 void show_flags() {
   fprintf(stderr, "Supported flags: \n\
 		-a : Enable all (below) emulator specified flags \n\
+		-d : Enable debug mode \n\
 		-f : Show flag contents \n\
 		-h : Show help (this) screen \n\
 		-m : Show memory contents \n\
@@ -59,12 +60,14 @@ void display(glob_t *glob, args_t p_args) {
 		}
 
 		char **ptr = &glob->stack->arr[0];
-		if (*ptr) {
+		int stack_size = glob->stack->top + 1;
+		
+		if (*ptr && stack_size) {
 			printf("Stack:\n");
 		}
 
-		int stack_size = glob->stack->top + 1;
-		while (stack_size--) {
+		while (stack_size > 0) {
+			stack_size--;
 			char **ref = ptr;
 			printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
 			if (!*ptr)
