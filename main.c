@@ -121,8 +121,8 @@ int main(int argc, char **argv) {
 			exec = 0;
 		}
 
-		if(exec){
-
+		if (exec) {
+			/*Debug mode is called only if there are no bad returns*/
 			if (glob->debug_mode) {
 				printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
 					glob->tokens[2]);
@@ -136,6 +136,7 @@ int main(int argc, char **argv) {
 			}
 			
 		} else {
+			/*When exec = 0, we have a bad return from above function calls, hence we exit the while loop*/ 
 			break;
 		}
 	}
