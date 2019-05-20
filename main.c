@@ -121,16 +121,22 @@ int main(int argc, char **argv) {
 			exec = 0;
 		}
 
-		if (exec && glob->debug_mode) {
-			printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
-				glob->tokens[2]);
+		if(exec){
 
-			char ch = getchar();
-			while(ch != 'c'){
-				ch = getchar();
+			if (glob->debug_mode) {
+				printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
+					glob->tokens[2]);
+
+				char ch = getchar();
+				while(ch != 'c'){
+					ch = getchar();
+				}
+
+				display(glob, args_);
 			}
-
-			display(glob, args_);
+			
+		} else {
+			break;
 		}
 	}
 
@@ -140,7 +146,7 @@ int main(int argc, char **argv) {
 	}
 
 	if(glob->debug_mode){
-		printf(ANSI_COLOR_GREEN "\n\nResult\n");
+		printf("\n\nResult\n" ANSI_COLOR_GREEN);
 	}
 	/* Program ends here. */
 	display(glob, args_);
