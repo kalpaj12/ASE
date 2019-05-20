@@ -82,6 +82,7 @@ int          get_op_val   (glob_t *glob, char *op, char *buf, unsigned long size
 char        *get_reg_ptr  (glob_t *glob, char *reg);
 glob_t      *init_glob    (FILE   *fd);
 int          lahf         (glob_t *glob, char *buf, unsigned long size);
+int          org          (glob_t *glob, char *buf, unsigned long size);
 int          sahf         (glob_t *glob, char *buf, unsigned long size);
 
 #endif

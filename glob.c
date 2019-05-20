@@ -336,6 +336,42 @@ int lahf(glob_t *glob, char *buf, unsigned long size) {
 }
 
 /**
+ * @desc  : Implements the ORG instruction.
+ * @param : glob -
+ *          buf  - unused
+ *          size - unused
+ * @return: int  - 0 if fail, 1 if success.
+ */
+int org(glob_t *glob, char *buf, unsigned long size) {
+	if (!glob) {
+		fprintf(stderr, "org(): glob - nullptr.\n");
+		return 0;
+	}
+
+	if (glob->n_op != 1) {
+		fprintf(stderr, "org(): Invalid number of arg(s). Required 1 arg.\n");
+		return 0;
+	}
+
+	/* There is nothing to do with ORG's operand. Retained for compatibility. */
+	char *op = glob->tokens[1];
+	int max = strlen(op);
+
+	if (op[max - 1] != 'h' && op[max - 1] != 'H') {
+		fprintf(stderr, "org(): Required hex suffix.\n");
+		return 0;
+	}
+
+	op[max - 1] = '\0';
+	if (!is_valid_hex(op)) {
+		fprintf(stderr, "org(): Invalid address [%s].\n", op);
+		return 0;
+	}
+
+	return 1;
+}
+
+/**
  * @desc  : Implements the SAHF instruction.
  * @param : glob -
  *          buf  - unused
