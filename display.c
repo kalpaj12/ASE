@@ -64,14 +64,14 @@ void display(glob_t *glob, args_t p_args) {
 		
 		if (*ptr && stack_size) {
 			printf("Stack:\n");
-		}
-
-		while (stack_size > 0) {
-			stack_size--;
-			char **ref = ptr;
-			printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
-			if (!*ptr)
-				printf("\n");
+			
+			while (stack_size > 0) {
+				stack_size--;
+				char **ref = ptr;
+				printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
+				if (!*ptr)
+					printf("\n");
+			}
 		}
 	}
 
