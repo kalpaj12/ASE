@@ -157,8 +157,7 @@ int main(int argc, char **argv) {
 	/* Program ends here. */
 	display(glob, args_);
 
-	/* Close existing file handles and clear out alloc'ed memory. */
-	fclose(fd);
+	/* clearing alloc'ed memory. */
 	destroy_glob(glob);
 	destroy_table(table);
 
