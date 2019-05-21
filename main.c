@@ -124,14 +124,9 @@ int main(int argc, char **argv) {
 		if (exec) {
 			/* Debug mode is called only if there are no bad returns */
 			if (glob->debug_mode) {
+				printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
+					glob->tokens[2]);
 				
-				if (strcmp(glob->tokens[0],"PUSH") && strcmp(glob->tokens[0],"POP") != 0) {
-					printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
-						glob->tokens[2]);
-				} else {
-					printf("Evaluating: %s %s\n", glob->tokens[0], glob->tokens[1]);
-				}
-
 				char ch = getchar();
 				while (ch != 'c') {
 					ch = getchar();

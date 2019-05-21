@@ -291,7 +291,10 @@ int parse_line(glob_t *glob, char *line) {
 	}
 
 	memset(glob->label, 0, BUF_SZ);
-
+	memset(glob->tokens[0], 0, sizeof(glob->tokens[0]));
+	memset(glob->tokens[1], 0, sizeof(glob->tokens[1]));
+	memset(glob->tokens[2], 0, sizeof(glob->tokens[2]));
+	
 	glob->c_line++;
 	glob->p_len = glob->c_len;
 	glob->c_len = strlen(line);
