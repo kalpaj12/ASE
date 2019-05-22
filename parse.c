@@ -2,14 +2,7 @@
  * @file: parse.c
  * @desc: Defines functions that help parse source lines and defines
  *        the following 8086 instructions:
- *        a) JC
- *        b) JE
- *        c) JP
- *        d) JNC
- *        e) JNE
- *        f) JNP
- *        g) JMP
- *        h) JCXZ
+ *        JC, JE, JP, JNC, JNE, JNP, JMP, JCXZ
  */ 
 
 #include <assert.h>
@@ -19,6 +12,20 @@
 #include <string.h>
 
 #include "parse.h"
+
+/**
+ * @desc  : Returns the binary representation of an unsigned number.
+ * @param : x    - Number to convert
+ *          buf  - Buffer that receives the representation
+ *          size - Size of the buffer
+ * @return: void
+ */
+void binary_repr(int x, char *buf, unsigned long size) {
+	memset(buf, 0, size);
+	for (int i = 15; i >= 0; i--) {
+		buf[16 - i - 1] = x & 1 << i ? '1' : '0';
+	}
+}
 
 /**
  * @desc  : Returns the size of the register.
@@ -291,10 +298,10 @@ int parse_line(glob_t *glob, char *line) {
 	}
 
 	memset(glob->label, 0, BUF_SZ);
-	memset(glob->tokens[0], 0, sizeof(glob->tokens[0]));
-	memset(glob->tokens[1], 0, sizeof(glob->tokens[1]));
-	memset(glob->tokens[2], 0, sizeof(glob->tokens[2]));
-	
+	for (int i = 0; i <= 2; i++) {
+		memset(glob->tokens[i], 0, sizeof(glob->tokens[i]));
+	}
+
 	glob->c_line++;
 	glob->p_len = glob->c_len;
 	glob->c_len = strlen(line);

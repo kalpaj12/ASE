@@ -1,15 +1,8 @@
 /**
- * @file: parse.c
- * @desc: Declares functions that help parse source lines and declares
+ * @file: parse.h
+ * @desc: Defines functions that help parse source lines and defines
  *        the following 8086 instructions:
- *        a) JC
- *        b) JE
- *        c) JP
- *        d) JNC
- *        e) JNE
- *        f) JNP
- *        g) JMP
- *        h) JCXZ
+ *        JC, JE, JP, JNC, JNE, JNP, JMP, JCXZ
  */ 
 
 #ifndef _ASE_PARSE_
@@ -21,6 +14,7 @@
 #define BIN_FS  'B'
 #define HEX_FS  'H'
 
+void binary_repr    (int x, char *buf, unsigned long size);
 int  get_reg_size   (char *reg);
 int  is_op_reg      (char *op);
 int  is_op_addr     (char *op);
