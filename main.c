@@ -20,10 +20,6 @@
 #include "stack.h"
 #include "tengine.h"
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
-
 void parse_args(glob_t *glob, int argc, char **argv, args_t *p_args) {
 	int opt;
 	int idx = 0;
@@ -148,7 +144,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (glob->debug_mode) {
-		printf("\n\nResult\n" ANSI_COLOR_GREEN);
+		printf("\n\nResult\n" TERM_GREEN);
 	}
 
 	/* Program ends here. */

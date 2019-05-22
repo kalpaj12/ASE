@@ -11,6 +11,10 @@
 
 #define BUF_SZ 128
 
+#define TERM_RED   "\x1b[31m"
+#define TERM_GREEN "\x1b[32m"
+#define TERM_RESET "\x1b[0m"
+
 #define FLAG_AF "UF"
 #define FLAG_CF "EF"
 #define FLAG_IF "IF"
