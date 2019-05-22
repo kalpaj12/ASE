@@ -64,25 +64,28 @@ void display(glob_t *glob, args_t p_args) {
 		
 		if (*ptr && stack_size) {
 			printf("Stack:\n");
-		}
-
-		while (stack_size > 0) {
-			stack_size--;
-			char **ref = ptr;
-			printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
-			if (!*ptr)
-				printf("\n");
+			
+			while (stack_size > 0) {
+				stack_size--;
+				char **ref = ptr;
+				printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
+				if (!*ptr)
+					printf("\n");
+			}
 		}
 	}
 
 	skip:
 	if (p_args.m && glob->mem) {
-		printf("Memory:\n");
 		mem_nodes_t *node = glob->mem->head;
 		
-		while (node && glob) {
-			printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
-			node = node->next;
+		if (node && glob) {
+			printf("Memory:\n");
+			
+			while (node && glob) {
+				printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
+				node = node->next;
+			}
 		}
 	}
 

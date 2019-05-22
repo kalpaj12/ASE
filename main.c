@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
 			if (glob->debug_mode) {
 				printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
 					glob->tokens[2]);
-
+				
 				char ch = getchar();
 				while (ch != 'c') {
 					ch = getchar();
@@ -136,7 +136,8 @@ int main(int argc, char **argv) {
 			}
 			
 		} else {
-			/* When exec = 0, we have a bad return from above function calls, hence we exit the while loop */ 
+			/* When exec = 0, we have a bad return from above function calls, 
+			   hence we exit the while loop */ 
 			break;
 		}
 	}
@@ -149,11 +150,11 @@ int main(int argc, char **argv) {
 	if (glob->debug_mode) {
 		printf("\n\nResult\n" ANSI_COLOR_GREEN);
 	}
+
 	/* Program ends here. */
 	display(glob, args_);
 
-	/* Close existing file handles and clear out alloc'ed memory. */
-	fclose(fd);
+	/* clearing alloc'ed memory. */
 	destroy_glob(glob);
 	destroy_table(table);
 
