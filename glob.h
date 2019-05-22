@@ -27,6 +27,13 @@
 #define REG_DX "DX"
 
 typedef struct flags {
+	/**
+	 * Indicates if a flag has changed.
+	 * if f_ch[0] is set, it means af (aux flag) has changed.
+	 * if f_ch[1] is set, it means cf (carry flag) has changed
+	 * and so on.
+	 */
+	int f_ch[8];
 	int af, cf, df, iif, of, pf, sf, zf;
 } flags_t;
 

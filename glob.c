@@ -312,6 +312,8 @@ glob_t *init_glob(FILE *fd) {
 
 	glob->mem->ds = glob->mem->es = 0;
 	memset(glob->flags, 0, sizeof(flags_t));
+	memset(glob->flags->f_ch, 0, sizeof(glob->flags->f_ch));
+
 	return glob;
 }
 
