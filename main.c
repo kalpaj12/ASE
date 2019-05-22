@@ -136,7 +136,8 @@ int main(int argc, char **argv) {
 			}
 			
 		} else {
-			/* When exec = 0, we have a bad return from above function calls, hence we exit the while loop */ 
+			/* When exec = 0, we have a bad return from above function calls, 
+			   hence we exit the while loop */ 
 			break;
 		}
 	}
@@ -149,6 +150,7 @@ int main(int argc, char **argv) {
 	if (glob->debug_mode) {
 		printf("\n\nResult\n" ANSI_COLOR_GREEN);
 	}
+
 	/* Program ends here. */
 	display(glob, args_);
 
