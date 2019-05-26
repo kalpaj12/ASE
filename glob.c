@@ -310,7 +310,7 @@ glob_t *init_glob(FILE *fd) {
 	glob->bpnt = glob->stack->top = -1;
 	glob->c_line = glob->p_len = 0;
 
-	glob->mem->ds = glob->mem->es = 0;
+	glob->mem->si = glob->mem->di = glob->mem->ds = glob->mem->es = 0;
 	memset(glob->flags, 0, sizeof(flags_t));
 	memset(glob->flags->f_ch, 0, sizeof(glob->flags->f_ch));
 
