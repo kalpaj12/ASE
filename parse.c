@@ -371,6 +371,9 @@ int parse_line(glob_t *glob, char *line) {
 		if (*back == ':') {
 			*back = '\0';
 			memcpy(glob->label, ptr, BUF_SZ);
+			memcpy(glob->label_locs[glob->idx].label, ptr, BUF_SZ);
+			glob->label_locs[glob->idx++].line = glob->c_line;
+
 			/* Do not count label as a token. */
 			goto l1;
 		}

@@ -11,7 +11,7 @@
 #include "parse.h"
 
 typedef struct args_ {
-	int a, f, h, m, r, s, v;
+	int a, f, h, l, m, r, s, v;
 } args_t;
 
 void display    (glob_t *glob, args_t p_args);

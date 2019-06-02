@@ -30,25 +30,23 @@ void parse_args(glob_t *glob, int argc, char **argv, args_t *p_args) {
 		{0, 0, 0, 0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "ab:dfhmrsvw", long_opt, &idx)) != -1) {
+	while ((opt = getopt_long(argc, argv, "ab:dfhlmrsvw", long_opt, &idx)) != -1) {
 		switch (opt) {
-		case 'a': p_args->f  = p_args->m = p_args->r = p_args->s = 1; break;
+		case 'a': p_args->f = p_args->l = p_args->m = p_args->r = p_args->s = 1; break;
 
 		/**
 		 * TODO
 		 * Allow user to set a break point.
 		 */
 		case 'b': glob->bpnt = (int)strtol(optarg, NULL, 0); break;
-		
-		/* Debug Mode */
-		case 'd': glob->debug_mode = 1; break;
-
-		case 'f': p_args->f  = 1; break;
-		case 'h': p_args->h  = 1; break;
-		case 'm': p_args->m  = 1; break;
-		case 'r': p_args->r  = 1; break;
-		case 's': p_args->s  = 1; break;
-		case 'v': p_args->v  = 1; break;
+		case 'd': glob->debug = 1; break;
+		case 'f': p_args->f   = 1; break;
+		case 'h': p_args->h   = 1; break;
+		case 'l': p_args->l   = 1; break;
+		case 'm': p_args->m   = 1; break;
+		case 'r': p_args->r   = 1; break;
+		case 's': p_args->s   = 1; break;
+		case 'v': p_args->v   = 1; break;
 		
 		/* Turn off warnings */
 		case 'w': glob->mem->warned = 1; break;
@@ -92,12 +90,13 @@ int main(int argc, char **argv) {
 	memset(line, 0, sizeof(line));
 	parse_args(glob, argc, argv, &args_);
 
-	if (glob->debug_mode) {
+	if (glob->debug) {
 		printf("Debug Mode. Press 'c' to continue.\n\n");
 	}
 	
 	while (fgets(line, sizeof(line), fd) != NULL) {
 		if (should_skip_ln(line)) {
+			glob->c_line++;
 			continue;
 		}
 		
@@ -118,8 +117,8 @@ int main(int argc, char **argv) {
 		}
 
 		if (exec) {
-			/* Debug mode is called only if there are no bad returns */
-			if (glob->debug_mode) {
+			/* Debug mode is called only if there are no bad returns. */
+			if (glob->debug) {
 				printf("Evaluating: %s %s %s\n", glob->tokens[0], glob->tokens[1],
 					glob->tokens[2]);
 				
@@ -132,8 +131,10 @@ int main(int argc, char **argv) {
 			}
 			
 		} else {
-			/* When exec = 0, we have a bad return from above function calls, 
-			   hence we exit the while loop */ 
+			/**
+			 * When exec = 0, we have a bad return from above function calls,
+			 * hence we exit the while loop.
+			 */ 
 			break;
 		}
 	}
@@ -143,7 +144,7 @@ int main(int argc, char **argv) {
 			++glob->c_line);
 	}
 
-	if (glob->debug_mode) {
+	if (glob->debug) {
 		printf("\n\nResult\n" TERM_GREEN);
 	}
 

@@ -11,18 +11,23 @@
 
 #include "display.h"
 
-#define BUILD 1905
+#define BUILD 1906
 
+/**
+ * @desc  : Display the help menu.
+ * @return: void
+ */ 
 void show_flags() {
   fprintf(stderr, "Supported flags: \n\
 		-a : Enable all (below) emulator specified flags \n\
 		-d : Enable debug mode \n\
 		-f : Show flag contents \n\
 		-h : Show help (this) screen \n\
+		-l : Display declared labels with their line \n\
 		-m : Show memory contents \n\
 		-r : Show register contents \n\
-		-s : Show stack contents\n\
-		-v : Show version info\n");
+		-s : Show stack contents \n\
+		-v : Show version info \n");
 }
 
 /**
@@ -44,6 +49,30 @@ void display(glob_t *glob, args_t p_args) {
 		printf("[PF]:[%d]\n",   glob->flags->pf);
 		printf("[SF]:[%d]\n",   glob->flags->sf);
 		printf("[ZF]:[%d]\n\n", glob->flags->zf);
+	}
+
+	if (p_args.h) {
+		show_flags();
+	}
+
+	if (p_args.l) {
+		for (int i = 0; i < glob->idx; i++) {
+			printf("[%s]:[%d]\n", glob->label_locs[i].label,
+				glob->label_locs[i].line);
+		}
+	}
+
+	if (p_args.m && glob->mem) {
+		mem_nodes_t *node = glob->mem->head;
+		
+		if (node && glob) {
+			printf("Memory:\n");
+			
+			while (node && glob) {
+				printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
+				node = node->next;
+			}
+		}
 	}
 
 	if (p_args.r && glob->registers) {
@@ -76,23 +105,6 @@ void display(glob_t *glob, args_t p_args) {
 	}
 
 	skip:
-	if (p_args.m && glob->mem) {
-		mem_nodes_t *node = glob->mem->head;
-		
-		if (node && glob) {
-			printf("Memory:\n");
-			
-			while (node && glob) {
-				printf("[%d:%d] - [%s]\n", node->seg, node->offset, node->val);
-				node = node->next;
-			}
-		}
-	}
-
-	if (p_args.h) {
-		show_flags();
-	}
-
 	if (p_args.v) {
 		printf("Build : %d\nAuthor: Pawan Kartik\n", BUILD);
 	}

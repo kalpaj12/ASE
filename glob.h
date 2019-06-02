@@ -60,7 +60,13 @@ typedef struct registers {
 } registers_t;
 
 typedef struct glob {
-	int debug_mode;
+	int idx;
+	struct label_loc {
+		int line;
+		char label[BUF_SZ];
+	} label_locs[256];
+
+	int debug;
 	int bpnt, n_op;
 	FILE *fd;
 
