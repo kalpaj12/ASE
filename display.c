@@ -92,19 +92,11 @@ void display(glob_t *glob, args_t p_args) {
 			goto skip;	
 		}
 
-		char **ptr = &glob->stack->arr[0];
-		int stack_size = glob->stack->top + 1;
-		
-		if (*ptr && stack_size) {
-			printf("Stack:\n");
-			
-			while (stack_size > 0) {
-				stack_size--;
-				char **ref = ptr;
-				printf("[%p]:[%s]\n", (void*)&*ref, *ptr++);
-				if (!*ptr)
-					printf("\n");
-			}
+		int sz = glob->stack->top;
+		while (sz >= 0) {
+			printf("[%p]:[%s]\n", (void*)&glob->stack->arr[sz],
+				glob->stack->arr[sz]);
+			sz--;
 		}
 	}
 
