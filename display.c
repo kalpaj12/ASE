@@ -56,6 +56,10 @@ void display(glob_t *glob, args_t p_args) {
 	}
 
 	if (p_args.l) {
+		if (glob->idx) {
+			printf("User specified labels:\n");
+		}
+
 		for (int i = 0; i < glob->idx; i++) {
 			printf("[%s]:[%d]\n", glob->label_locs[i].label,
 				glob->label_locs[i].line);
