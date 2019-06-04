@@ -32,7 +32,7 @@ void parse_args(glob_t *glob, int argc, char **argv, args_t *p_args) {
 
 	while ((opt = getopt_long(argc, argv, "ab:dfhlmrsvw", long_opt, &idx)) != -1) {
 		switch (opt) {
-		case 'a': p_args->f = p_args->l = p_args->m = p_args->r = p_args->s = 1; break;
+		case 'a': p_args->f = p_args->m = p_args->r = p_args->s = 1; break;
 
 		/**
 		 * TODO
