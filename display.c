@@ -88,10 +88,6 @@ void display(glob_t *glob, args_t p_args) {
 	}
 
 	if (p_args.s && glob->stack) {
-		if (glob->stack->top == -1) {
-			goto skip;	
-		}
-
 		int sz = glob->stack->top;
 		while (sz >= 0) {
 			printf("[%p]:[%s]\n", (void*)&glob->stack->arr[sz],
@@ -100,7 +96,6 @@ void display(glob_t *glob, args_t p_args) {
 		}
 	}
 
-	skip:
 	if (p_args.v) {
 		printf("Build : %d\nAuthor: Pawan Kartik\n", BUILD);
 	}
