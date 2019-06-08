@@ -213,6 +213,24 @@ int jump(glob_t *glob, char *buf, unsigned long size) {
 	char line[BUF_SZ], to_label[BUF_SZ];
 	memcpy(to_label, glob->tokens[1], sizeof(to_label));
 
+	int ln = -1;
+	for (int i = 0; i < glob->idx; i++) {
+		if (strcmp(glob->label_locs[i].label, to_label) == 0) {
+			ln = glob->label_locs[i].line;
+		}
+	}
+
+	if (ln != -1) {
+		while (glob->c_line != ln) {
+			step_back(glob);
+			char line[1024] = {0};
+			fgets(line, sizeof(line), glob->fd);
+		}
+
+		assert(parse_line(glob, line));
+		return 1;
+	}
+
 	while (fgets(line, sizeof(line), glob->fd) != NULL) {
 		if (should_skip_ln(line)) {
 			continue;
@@ -318,7 +336,7 @@ int parse_line(glob_t *glob, char *line) {
 
 		/* There's a space between label and colon? */
 		if (*ptr == ':') {
-			fprintf(stderr, "Valid label syntax: Label: [instr] [operands].\n");
+			fprintf(stderr, "Valid label syntax: Label: [instr] [operands] @ [%d].\n", glob->c_line);
 			return 0;
 		}
 
@@ -423,5 +441,7 @@ int step_back(glob_t *glob) {
 		return 0;
 	}
 
-	return fseek(glob->fd, -(glob->c_len + glob->p_len), SEEK_CUR) == 0;
+	glob->c_line--;
+	fseek(glob->fd, -(glob->c_len + glob->p_len), SEEK_CUR);
+	return fseek(glob->fd, -(glob->c_len), SEEK_CUR) == 0;
 }
