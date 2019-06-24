@@ -6,18 +6,19 @@ instructions - Move, jump, set/clear flag values etc.
 
 ### Building ASE:
 
-Run the provided build script `./build.sh`.
+```bash
+export DIW=TRUE
+./build.sh
+```
 
-Building ASE generates some warnings (not the C language's warnings, but the functions in the ASE itself generate them). You can silence them by executing `export DIW=TRUE` before running the build script. Note that you might need to `unset` it before running your programs or else your runtime warnings will be silenced too.
+### Tested on:
+Ubuntu 18.04 - `gcc & clang`
 
-### Compiler support:
-You will need a decent C compiler. ASE relies on compiler specific functions such as `__builtin_popcount` which are not standardised. Any fairly decent compiler such as GCC or Clang should support them.
-
-If you wish to build ASE for Windows, you'll need a GCC port or WSL. ASE remains un-tested for GCC ports.
+Windows 10 x64 1903 (WSL)
 
 ### Running ASE:
 
-`./ase file.asm --all-flags`
+`./ase file.asm -a`
 
 ### Supported command line args
 ```
@@ -30,13 +31,6 @@ If you wish to build ASE for Windows, you'll need a GCC port or WSL. ASE remains
 -s : Show stack contents
 -v : Show version info
 ```
-
-Note: Warnings are generated for:
-1. Not initialising DS or ES before use.
-2. Moving to a dirty memory location (not initialised prior to using).
-3. Possible register size mismatch.
-
-Disabling warnings is not recommended.
 
 ### Sample program
 
@@ -56,4 +50,21 @@ STD
 ```
 
 ### Console output
-![Alt text](/docs/images/ASE.png?raw=true "Title")
+```
+Flags:
+[CF]:[1]
+[DF]:[1]
+[IF]:[0]
+[OF]:[0]
+[PF]:[1]
+[SF]:[0]
+[ZF]:[0]
+
+Register:
+[AX]:[c]
+[BX]:[2694]
+[CX]:[]
+[DX]:[]
+
+[0x7fffee47a4c8]:[c]
+```
