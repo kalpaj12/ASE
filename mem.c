@@ -41,7 +41,7 @@ int move(glob_t *glob, char *buf, unsigned long size) {
 
 	/* Strict size checking */
 	if (is_op_reg(dest) && is_op_reg(src_) &&
-	   (get_reg_size(dest) != get_reg_size(src_)) {
+	   (get_reg_size(dest) != get_reg_size(src_))) {
 		fprintf(stderr, "move(): both registers must be of same size.\n");
 		return 0;
 	}
