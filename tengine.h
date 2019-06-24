@@ -15,6 +15,7 @@
 
 typedef struct entry {
 	char *f_id;
+	int n_ops;
 	int (*f_ptr)(glob_t *glob, char *buf, unsigned long size);
 	struct entry *next;
 } entry_t;
@@ -31,6 +32,6 @@ int      entry_exists   (table_t *table, char *f_id);
 table_t *init_table     (void);
 int      register_entry (table_t *table,
                          char *f_id,
-                         int (*f_ptr)(glob_t *glob, char *buf, unsigned long size));
+                         int (*f_ptr)(glob_t *glob, char *buf, unsigned long size), int n_ops);
 
 #endif

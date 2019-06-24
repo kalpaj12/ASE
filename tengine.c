@@ -35,6 +35,13 @@ int call_by_name(table_t *table, glob_t *glob, char *buf, unsigned long size) {
 	entry_t *entry = table->head;
 	while (entry) {
 		if (!strcmp(entry->f_id, glob->tokens[0])) {
+			/* Check if we've the operands required */
+			if (glob->n_op != entry->n_ops) {
+				fprintf(stderr, "call_by_name(): Invalid number of operands [%d] [%s].\n",
+					glob->n_op, entry->f_id);
+				return 0;
+			}
+
 			return entry->f_ptr(glob, buf, size);
 		}
 
@@ -112,7 +119,7 @@ table_t *init_table(void) {
  * @return: int   - 0 if fail, 1 if success.
  */
 int register_entry(table_t *table, char *f_id,
-                    int (*f_ptr)(glob_t *glob, char *buf, unsigned long size)) {
+                    int (*f_ptr)(glob_t *glob, char *buf, unsigned long size), int n_ops) {
 	if (!table) {
 		fprintf(stderr, "table - nullptr: register_entry");
 		return 0;
@@ -120,6 +127,7 @@ int register_entry(table_t *table, char *f_id,
 
 	entry_t *entry = malloc(sizeof(entry_t));
 	if (entry) {
+		entry->n_ops = n_ops;
 		entry->f_id = malloc(BUFSIZE);
 		memcpy(entry->f_id, f_id, BUFSIZE);
 		entry->f_ptr = f_ptr;
