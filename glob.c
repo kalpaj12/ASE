@@ -92,13 +92,9 @@ void destroy_glob(glob_t *glob) {
 	free(glob->mem);
 	free(glob->flags);
 
-	char **ptr = &glob->stack->arr[0];
-	int stack_size = glob->stack->top + 1;
-	if (*ptr && stack_size) {
-		while (stack_size > 0) {
-			free(*ptr++);
-			stack_size--;
-		}
+	int sz = glob->stack->top;
+	while (sz >= 0) {
+		free(glob->stack->arr[sz--]);
 	}
 
 	free(glob->stack);
