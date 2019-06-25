@@ -130,6 +130,28 @@ mem_nodes_t* get_mem_node(glob_t *glob, int addr) {
 }
 
 /**
+ * @desc  : Returns the ptr to the specified operand.
+ * @param : glob  -
+ *          op    - operand
+ * @return: char* - a pointer to the operand, or NULL.
+ */
+char *get_op_ptr(glob_t *glob, char *op) {
+	if (is_op_reg(op)) {
+		return get_reg_ptr(glob, op);
+	}
+
+	char addr[BUF_SZ] = {0};
+	memcpy(addr, &op[1], strlen(op) - 2);
+
+	if (!is_valid_addr(addr)) {
+		/* User probably supplied a literal */
+		return NULL;
+	}
+
+	return get_mem_node(glob, (int) strtol(addr, NULL, 0))->val;
+}
+
+/**
  * @desc  : Gets the specified operand's value.
  * @param : glob -
  *          op   - operand
