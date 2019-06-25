@@ -14,7 +14,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#include "a_math.h"
+#include "mathop.h"
 
 /**
  * @desc  : Implements the ADD instruction.

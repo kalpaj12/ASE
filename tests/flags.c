@@ -8,7 +8,7 @@
 #include "../glob.h"
 #include "../mem.h"
 #include "../parse.h"
-#include "../a_math.h"
+#include "../mathop.h"
 
 int main(void) {
 	FILE *fd = fopen("tests/ph", "r");

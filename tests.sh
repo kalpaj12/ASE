@@ -8,7 +8,7 @@ fail=0
 for file in tests/*.c;
 do
 	echo "Running tests: $file"
-	gcc "$file" a_math.c flags.c glob.c mem.c parse.c stack.c
+	gcc -std=c11 -Wall "$file" flags.c glob.c mathop.c mem.c parse.c stack.c
 	./a.out
 
 	if [ $? -eq 1 ]

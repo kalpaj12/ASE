@@ -7,8 +7,8 @@
 #ifndef _ASE_BIND_H_
 #define _ASE_BIND_H_
 
-#include "a_math.h"
 #include "flags.h"
+#include "mathop.h"
 #include "mem.h"
 #include "stack.h"
 #include "tengine.h"

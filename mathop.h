@@ -1,5 +1,5 @@
 /**
- * @file: a_math.h
+ * @file: mathop
  * @desc: Declares the following 8086 instructions:
  *        a) ADD
  *        b) SUB
