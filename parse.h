@@ -18,6 +18,7 @@ void binary_repr    (int x, char *buf, unsigned long size);
 int  get_reg_size   (char *reg);
 int  is_op_reg      (char *op);
 int  is_op_addr     (char *op);
+int  is_valid_addr  (char *addr);
 int  is_valid_hex   (char *hex);
 int  is_valid_op    (char *op);
 int  jump           (glob_t *glob, char *buf, unsigned long size);

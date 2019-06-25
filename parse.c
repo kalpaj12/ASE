@@ -100,6 +100,24 @@ int is_op_addr(char *op) {
 }
 
 /**
+ * @desc  : Validates if given address is a valid address form.
+ * @param : addr - address to validate
+ * @return: int - 0 if no, 1 if yes.
+ */
+int is_valid_addr(char *addr) {
+	char *ptr = addr;
+	while (*ptr) {
+		if (!isdigit(*ptr)) {
+			return 0;
+		}
+
+		ptr++;
+	}
+
+	return 1;
+}
+
+/**
  * @desc  : Validates if given string is a valid hex.
  * @param : hex - Hex to validate
  * @return: int - 0 if no, 1 if yes.
