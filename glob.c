@@ -351,11 +351,6 @@ int org(glob_t *glob, char *buf, unsigned long size) {
 		return 0;
 	}
 
-	if (glob->n_op != 1) {
-		fprintf(stderr, "org(): Invalid number of arg(s). Required 1 arg.\n");
-		return 0;
-	}
-
 	/* There is nothing to do with ORG's operand. Retained for compatibility. */
 	char *op = glob->tokens[1];
 	int max = strlen(op);
